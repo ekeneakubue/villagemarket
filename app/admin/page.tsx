@@ -349,6 +349,7 @@ export default function AdminDashboard() {
   const handleTabChange = (tab: TabType) => {
     setActiveTab(tab);
     router.push(`/admin?tab=${tab}`, { scroll: false });
+    setIsSidebarOpen(false); // Close sidebar on mobile after selection
   };
 
   // Fetch users from API
@@ -472,6 +473,7 @@ export default function AdminDashboard() {
     title: string;
     message: string;
   }>({ show: false, type: "success", title: "", message: "" });
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   const showToast = (type: "success" | "error", title: string, message: string) => {
     setToast({ show: true, type, title, message });
@@ -881,15 +883,25 @@ export default function AdminDashboard() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-4">
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center gap-3">
+              {/* Mobile menu button */}
+              <button
+                onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+                className="lg:hidden p-2 rounded-lg hover:bg-green-800 transition-colors"
+                aria-label="Toggle menu"
+              >
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+                </svg>
+              </button>
               <Link href="/" className="flex items-center">
-                <img src="/images/logo.png" alt="Village Market" className="w-40 h-15" />
+                <img src="/images/logo.png" alt="Village Market" className="w-32 sm:w-40 h-auto" />
               </Link>
             </div>
-            <div className="flex items-center space-x-4">
-              <div className="text-sm text-gray-50">
+            <div className="flex items-center space-x-2 sm:space-x-4">
+              <div className="text-xs sm:text-sm text-gray-50 hidden sm:block">
                 Admin User
               </div>
-              <button className="px-4 py-2 text-sm text-gray-50 hover:bg-gray-100 rounded-lg transition-colors">
+              <button className="px-3 py-2 text-xs sm:text-sm text-gray-50 hover:bg-green-800 rounded-lg transition-colors">
                 Logout
               </button>
             </div>
@@ -897,10 +909,25 @@ export default function AdminDashboard() {
         </div>
       </nav>
 
-      <div className="flex">
+      <div className="flex relative">
+        {/* Mobile overlay */}
+        {isSidebarOpen && (
+          <div
+            className="fixed inset-0 bg-black/50 z-40 lg:hidden"
+            onClick={() => setIsSidebarOpen(false)}
+          />
+        )}
+
         {/* Sidebar */}
-        <aside className="w-64 bg-white border-r border-gray-200 min-h-[calc(100vh-4rem)]">
-          <nav className="p-4 space-y-2">
+        <aside className={`
+          fixed lg:sticky top-0 left-0 
+          w-64 bg-white border-r border-gray-200 
+          min-h-screen lg:min-h-[calc(100vh-4rem)]
+          z-50 lg:z-0
+          transform transition-transform duration-300 ease-in-out
+          ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
+        `}>
+          <nav className="p-4 space-y-2 pt-20 lg:pt-4">
             <button
               onClick={() => handleTabChange("overview")}
               className={`w-full text-left px-4 py-3 rounded-lg transition-colors ${
@@ -1000,12 +1027,12 @@ export default function AdminDashboard() {
         </aside>
 
         {/* Main Content */}
-        <main className="flex-1 p-8">
+        <main className="flex-1 p-4 sm:p-6 lg:p-8 w-full lg:w-auto">
           {activeTab === "overview" && (
             <div className="space-y-8">
               <div>
-                <h1 className="text-3xl font-bold text-gray-900 mb-2">Dashboard Overview</h1>
-                <p className="text-gray-600">Monitor and manage your platform activities</p>
+                <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">Dashboard Overview</h1>
+                <p className="text-sm sm:text-base text-gray-600">Monitor and manage your platform activities</p>
               </div>
 
               {/* Stats Grid */}
@@ -1150,14 +1177,14 @@ export default function AdminDashboard() {
 
           {activeTab === "pools" && (
             <div className="space-y-6">
-              <div className="flex justify-between items-center">
+              <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
                 <div>
-                  <h1 className="text-3xl font-bold text-gray-900 mb-2">Pool Management</h1>
-                  <p className="text-gray-600">Manage all pools on the platform</p>
+                  <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">Pool Management</h1>
+                  <p className="text-sm sm:text-base text-gray-600">Manage all pools on the platform</p>
                 </div>
                 <button 
                   onClick={() => setIsCreateModalOpen(true)}
-                  className="bg-green-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-green-700 transition-colors"
+                  className="bg-green-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-green-700 transition-colors whitespace-nowrap self-start sm:self-auto"
                 >
                   + Create Pool
                 </button>
@@ -1340,12 +1367,12 @@ export default function AdminDashboard() {
 
           {activeTab === "users" && (
             <div className="space-y-6">
-              <div className="flex justify-between items-center">
+              <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
                 <div>
-                  <h1 className="text-3xl font-bold text-gray-900 mb-2">Manage Users</h1>
-                  <p className="text-gray-600">Manage platform users, roles, and their activities</p>
+                  <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">Manage Users</h1>
+                  <p className="text-sm sm:text-base text-gray-600">Manage platform users, roles, and their activities</p>
                 </div>
-                <div className="flex items-center gap-4">
+                <div className="flex items-center gap-2 sm:gap-4 flex-wrap">
                   <select className="px-4 py-2 border border-gray-300 rounded-lg text-sm">
                     <option value="">All Roles</option>
                     <option value="Admin">Admin</option>
@@ -1480,14 +1507,14 @@ export default function AdminDashboard() {
 
           {activeTab === "creators" && (
             <div className="space-y-6">
-              <div className="flex justify-between items-center">
+              <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
                 <div>
-                  <h1 className="text-3xl font-bold text-gray-900 mb-2">Manage Creators</h1>
-                  <p className="text-gray-600">Review and manage pool creators on the platform</p>
+                  <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">Manage Creators</h1>
+                  <p className="text-sm sm:text-base text-gray-600">Review and manage pool creators on the platform</p>
                 </div>
                 <button
                   onClick={() => setIsCreatorModalOpen(true)}
-                  className="bg-green-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-green-700 transition-colors"
+                  className="bg-green-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-green-700 transition-colors whitespace-nowrap self-start sm:self-auto"
                 >
                   + Add Creator
                 </button>
@@ -1626,14 +1653,14 @@ export default function AdminDashboard() {
 
           {activeTab === "teams" && (
             <div className="space-y-6">
-              <div className="flex justify-between items-center">
+              <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
                 <div>
-                  <h1 className="text-3xl font-bold text-gray-900 mb-2">Manage Team</h1>
-                  <p className="text-gray-600">Manage the VillageMarket team members shown on the About page</p>
+                  <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">Manage Team</h1>
+                  <p className="text-sm sm:text-base text-gray-600">Manage the VillageMarket team members shown on the About page</p>
                 </div>
                 <button
                   onClick={() => setIsTeamModalOpen(true)}
-                  className="bg-green-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-green-700 transition-colors"
+                  className="bg-green-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-green-700 transition-colors whitespace-nowrap self-start sm:self-auto"
                 >
                   + Add Team Member
                 </button>
@@ -1725,12 +1752,12 @@ export default function AdminDashboard() {
 
           {activeTab === "transactions" && (
             <div className="space-y-6">
-              <div className="flex justify-between items-center">
+              <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
                 <div>
-                  <h1 className="text-3xl font-bold text-gray-900 mb-2">Transaction History</h1>
-                  <p className="text-gray-600">Monitor all platform transactions</p>
+                  <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">Transaction History</h1>
+                  <p className="text-sm sm:text-base text-gray-600">Monitor all platform transactions</p>
                 </div>
-                <div className="flex gap-4">
+                <div className="flex gap-2 sm:gap-4 flex-wrap">
                   <select className="px-4 py-2 border border-gray-300 rounded-lg text-sm">
                     <option>All Status</option>
                     <option>Completed</option>
@@ -1801,7 +1828,7 @@ export default function AdminDashboard() {
       {/* Create Pool Modal */}
       {isCreateModalOpen && (
         <div 
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50"
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 p-4"
           onClick={(e) => {
             if (e.target === e.currentTarget) {
               setIsCreateModalOpen(false);
@@ -3027,7 +3054,7 @@ export default function AdminDashboard() {
       {/* Add Creator Modal */}
       {isCreatorModalOpen && (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50"
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 p-4"
           onClick={(e) => {
             if (e.target === e.currentTarget) {
               setIsCreatorModalOpen(false);
