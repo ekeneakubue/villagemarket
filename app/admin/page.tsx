@@ -3067,6 +3067,7 @@ export default function AdminDashboard() {
                 address: "",
                 idType: "NIN",
                 idNumber: "",
+                password: "",
               });
             }
           }}
@@ -3090,6 +3091,7 @@ export default function AdminDashboard() {
                       address: "",
                       idType: "NIN",
                       idNumber: "",
+                      password: "",
                     });
                   }}
                   className="text-gray-400 hover:text-gray-600 transition-colors"
@@ -3319,6 +3321,7 @@ export default function AdminDashboard() {
                       address: "",
                       idType: "NIN",
                       idNumber: "",
+                      password: "",
                     });
                   }}
                   className="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg font-semibold hover:bg-gray-50 transition-colors"
