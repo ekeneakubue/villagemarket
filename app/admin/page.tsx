@@ -333,6 +333,7 @@ function AdminDashboardContent() {
   const [isUserEditModalOpen, setIsUserEditModalOpen] = useState(false);
   const [isUserDeleteModalOpen, setIsUserDeleteModalOpen] = useState(false);
   const [isCreatorViewModalOpen, setIsCreatorViewModalOpen] = useState(false);
+  const [isCreatorEditModalOpen, setIsCreatorEditModalOpen] = useState(false);
   const [isCreatorDeleteModalOpen, setIsCreatorDeleteModalOpen] = useState(false);
   const [users, setUsers] = useState<User[]>([]);
   const [usersLoading, setUsersLoading] = useState(true);
@@ -448,6 +449,18 @@ function AdminDashboardContent() {
     idType: "NIN",
     idNumber: "",
     password: "",
+  });
+
+  const [editCreatorFormData, setEditCreatorFormData] = useState({
+    id: "",
+    avatar: "",
+    name: "",
+    email: "",
+    phone: "",
+    organization: "",
+    address: "",
+    idType: "NIN",
+    idNumber: "",
   });
 
   const [teamFormData, setTeamFormData] = useState({
@@ -729,6 +742,22 @@ function AdminDashboardContent() {
   const handleViewCreator = (creator: Creator) => {
     setSelectedCreator(creator);
     setIsCreatorViewModalOpen(true);
+  };
+
+  const handleEditCreator = (creator: Creator) => {
+    setSelectedCreator(creator);
+    setEditCreatorFormData({
+      id: creator.id,
+      avatar: creator.avatar || "",
+      name: creator.name,
+      email: creator.email,
+      phone: creator.phone,
+      organization: creator.organization || "",
+      address: creator.address || "",
+      idType: creator.idType,
+      idNumber: creator.idNumber,
+    });
+    setIsCreatorEditModalOpen(true);
   };
 
   const handleVerifyCreator = async (creator: Creator) => {
@@ -1664,7 +1693,7 @@ function AdminDashboardContent() {
                                 </svg>
                               </button>
                               <button 
-                                onClick={() => alert('Edit creator feature coming soon')}
+                                onClick={() => handleEditCreator(creator)}
                                 className="p-2 text-purple-600 hover:text-purple-700 hover:bg-purple-50 rounded-lg transition-colors" 
                                 title="Edit"
                               >
@@ -3994,6 +4023,226 @@ function AdminDashboardContent() {
                   </div>
                 </div>
               </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Creator Edit Modal */}
+      {isCreatorEditModalOpen && selectedCreator && (
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-hidden">
+            <div className="bg-gradient-to-r from-purple-600 to-indigo-600 px-6 py-4 flex justify-between items-center">
+              <h2 className="text-xl font-bold text-white">Edit Creator</h2>
+              <button
+                onClick={() => setIsCreatorEditModalOpen(false)}
+                className="text-white/80 hover:text-white transition-colors"
+              >
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+            
+            <div className="p-6 overflow-y-auto max-h-[calc(90vh-80px)]">
+              <form
+                onSubmit={async (e) => {
+                  e.preventDefault();
+                  try {
+                    const response = await fetch(`/api/creators/${editCreatorFormData.id}`, {
+                      method: "PUT",
+                      headers: { "Content-Type": "application/json" },
+                      body: JSON.stringify({
+                        avatar: editCreatorFormData.avatar || null,
+                        name: editCreatorFormData.name,
+                        email: editCreatorFormData.email,
+                        phone: editCreatorFormData.phone,
+                        organization: editCreatorFormData.organization || null,
+                        address: editCreatorFormData.address || null,
+                        idType: editCreatorFormData.idType,
+                        idNumber: editCreatorFormData.idNumber,
+                      }),
+                    });
+
+                    if (response.ok) {
+                      const updatedCreator = await response.json();
+                      setCreators((prev) =>
+                        prev.map((c) => (c.id === updatedCreator.id ? updatedCreator : c))
+                      );
+                      setIsCreatorEditModalOpen(false);
+                      showToast("success", "Creator Updated!", `${updatedCreator.name}'s information has been updated.`);
+                    } else {
+                      const error = await response.json();
+                      showToast("error", "Error", error.error || "Failed to update creator");
+                    }
+                  } catch (error) {
+                    console.error("Error updating creator:", error);
+                    showToast("error", "Error", "Failed to update creator");
+                  }
+                }}
+                className="space-y-5"
+              >
+                {/* Avatar */}
+                <div className="flex flex-col items-center">
+                  <label className="block text-sm font-semibold text-gray-700 mb-3">Profile Photo</label>
+                  <div className="relative">
+                    <div className="w-24 h-24 rounded-full overflow-hidden bg-gradient-to-br from-purple-100 to-indigo-100 flex items-center justify-center">
+                      {editCreatorFormData.avatar ? (
+                        <img src={editCreatorFormData.avatar} alt="Preview" className="w-full h-full object-cover" />
+                      ) : (
+                        <svg className="w-10 h-10 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                        </svg>
+                      )}
+                    </div>
+                    <label className="absolute bottom-0 right-0 bg-purple-600 text-white p-2 rounded-full cursor-pointer hover:bg-purple-700 transition-colors shadow-lg">
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
+                      </svg>
+                      <input
+                        type="file"
+                        accept="image/*"
+                        className="hidden"
+                        onChange={(e) => {
+                          const file = e.target.files?.[0];
+                          if (file) {
+                            const reader = new FileReader();
+                            reader.onloadend = () => {
+                              setEditCreatorFormData({ ...editCreatorFormData, avatar: reader.result as string });
+                            };
+                            reader.readAsDataURL(file);
+                          }
+                        }}
+                      />
+                    </label>
+                  </div>
+                  {editCreatorFormData.avatar && (
+                    <button
+                      type="button"
+                      onClick={() => setEditCreatorFormData({ ...editCreatorFormData, avatar: "" })}
+                      className="mt-2 text-xs text-red-600 hover:text-red-700"
+                    >
+                      Remove photo
+                    </button>
+                  )}
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-semibold text-gray-700 mb-2">
+                      Full Name <span className="text-red-500">*</span>
+                    </label>
+                    <input
+                      type="text"
+                      required
+                      value={editCreatorFormData.name}
+                      onChange={(e) => setEditCreatorFormData({ ...editCreatorFormData, name: e.target.value })}
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none transition-all"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-semibold text-gray-700 mb-2">
+                      Email Address <span className="text-red-500">*</span>
+                    </label>
+                    <input
+                      type="email"
+                      required
+                      value={editCreatorFormData.email}
+                      onChange={(e) => setEditCreatorFormData({ ...editCreatorFormData, email: e.target.value })}
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none transition-all"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-semibold text-gray-700 mb-2">
+                      Phone Number <span className="text-red-500">*</span>
+                    </label>
+                    <input
+                      type="tel"
+                      required
+                      value={editCreatorFormData.phone}
+                      onChange={(e) => setEditCreatorFormData({ ...editCreatorFormData, phone: e.target.value })}
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none transition-all"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-semibold text-gray-700 mb-2">
+                      Organization/Business
+                    </label>
+                    <input
+                      type="text"
+                      value={editCreatorFormData.organization}
+                      onChange={(e) => setEditCreatorFormData({ ...editCreatorFormData, organization: e.target.value })}
+                      placeholder="Optional"
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none transition-all"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">
+                    Address <span className="text-red-500">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    value={editCreatorFormData.address}
+                    onChange={(e) => setEditCreatorFormData({ ...editCreatorFormData, address: e.target.value })}
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none transition-all"
+                  />
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-semibold text-gray-700 mb-2">
+                      ID Type <span className="text-red-500">*</span>
+                    </label>
+                    <select
+                      required
+                      value={editCreatorFormData.idType}
+                      onChange={(e) => setEditCreatorFormData({ ...editCreatorFormData, idType: e.target.value })}
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none transition-all"
+                    >
+                      <option value="NIN">NIN (National ID)</option>
+                      <option value="BVN">BVN (Bank Verification)</option>
+                      <option value="DRIVERS_LICENSE">Driver's License</option>
+                      <option value="PASSPORT">International Passport</option>
+                    </select>
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-semibold text-gray-700 mb-2">
+                      ID Number <span className="text-red-500">*</span>
+                    </label>
+                    <input
+                      type="text"
+                      required
+                      value={editCreatorFormData.idNumber}
+                      onChange={(e) => setEditCreatorFormData({ ...editCreatorFormData, idNumber: e.target.value })}
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none transition-all"
+                    />
+                  </div>
+                </div>
+
+                <div className="flex justify-end gap-3 pt-4 border-t border-gray-200">
+                  <button
+                    type="button"
+                    onClick={() => setIsCreatorEditModalOpen(false)}
+                    className="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg font-semibold hover:bg-gray-50 transition-colors"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="submit"
+                    className="px-6 py-3 bg-purple-600 text-white rounded-lg font-semibold hover:bg-purple-700 transition-colors"
+                  >
+                    Save Changes
+                  </button>
+                </div>
+              </form>
             </div>
           </div>
         </div>

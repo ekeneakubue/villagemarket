@@ -52,26 +52,41 @@ export async function PUT(
   try {
     const { id } = await params;
     const body = await request.json();
-    const { status } = body;
 
-    if (!status) {
-      return NextResponse.json(
-        { error: "Status is required" },
-        { status: 400 }
-      );
-    }
+    // Determine if this is a status-only update or a full profile update
+    const updateData: any = {};
 
-    const validStatuses = ["PENDING", "VERIFIED", "SUSPENDED"];
-    if (!validStatuses.includes(status)) {
-      return NextResponse.json(
-        { error: "Invalid status" },
-        { status: 400 }
-      );
+    // If status is provided alone, it's a status update
+    if (body.status && Object.keys(body).length === 1) {
+      const validStatuses = ["PENDING", "VERIFIED", "SUSPENDED"];
+      if (!validStatuses.includes(body.status)) {
+        return NextResponse.json(
+          { error: "Invalid status" },
+          { status: 400 }
+        );
+      }
+      updateData.status = body.status;
+    } else {
+      // Full profile update
+      if (body.name) updateData.name = body.name;
+      if (body.email) updateData.email = body.email;
+      if (body.phone) updateData.phone = body.phone;
+      if (body.organization !== undefined) updateData.organization = body.organization || null;
+      if (body.address !== undefined) updateData.address = body.address || null;
+      if (body.idType) updateData.idType = body.idType;
+      if (body.idNumber) updateData.idNumber = body.idNumber;
+      if (body.avatar !== undefined) updateData.avatar = body.avatar || null;
+      if (body.status) {
+        const validStatuses = ["PENDING", "VERIFIED", "SUSPENDED"];
+        if (validStatuses.includes(body.status)) {
+          updateData.status = body.status;
+        }
+      }
     }
 
     const creator = await prisma.creator.update({
       where: { id },
-      data: { status },
+      data: updateData,
       select: {
         id: true,
         avatar: true,
