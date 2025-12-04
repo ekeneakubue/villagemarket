@@ -255,7 +255,7 @@ function SignUpPageContent() {
                     onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                     required
                     placeholder="John Doe"
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent outline-none transition-all"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent outline-none transition-all text-gray-900 placeholder:text-gray-400"
                   />
                 </div>
 
@@ -269,7 +269,7 @@ function SignUpPageContent() {
                     onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                     required
                     placeholder="you@example.com"
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent outline-none transition-all"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent outline-none transition-all text-gray-900 placeholder:text-gray-400"
                   />
                 </div>
 
@@ -282,7 +282,7 @@ function SignUpPageContent() {
                     value={formData.phone}
                     onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
                     placeholder="e.g., 08012345678"
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent outline-none transition-all"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent outline-none transition-all text-gray-900 placeholder:text-gray-400"
                   />
                 </div>
 
@@ -296,7 +296,7 @@ function SignUpPageContent() {
                     onChange={(e) => setFormData({ ...formData, password: e.target.value })}
                     required
                     placeholder="At least 8 characters"
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent outline-none transition-all"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent outline-none transition-all text-gray-900 placeholder:text-gray-400"
                   />
                 </div>
               </div>
@@ -312,7 +312,7 @@ function SignUpPageContent() {
                   onChange={(e) => setFormData({ ...formData, confirmPassword: e.target.value })}
                   required
                   placeholder="Re-enter your password"
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent outline-none transition-all"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent outline-none transition-all text-gray-900 placeholder:text-gray-400"
                 />
               </div>
 

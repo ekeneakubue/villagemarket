@@ -215,23 +215,23 @@ function PoolDetailPageContent() {
           ← Back to pools
         </Link>
 
-        <section className="mt-6 grid gap-10 lg:grid-cols-[1.3fr_0.9fr]">
+        <section className="mt-6 grid gap-6 lg:gap-10 lg:grid-cols-[1.3fr_0.9fr]">
           <div className="rounded-3xl overflow-hidden shadow-2xl border border-white">
             {pool.image ? (
               <div
-                className="h-72 bg-cover bg-center"
+                className="h-48 sm:h-64 lg:h-72 bg-cover bg-center"
                 style={{
                   backgroundImage: `linear-gradient(120deg, rgba(0,0,0,0.45), rgba(0,0,0,0.25)), url(${pool.image})`,
                 }}
               />
             ) : (
-              <div className="h-72 bg-gradient-to-br from-green-400 to-blue-500 flex items-center justify-center">
-                <span className="text-6xl text-white font-bold">
+              <div className="h-48 sm:h-64 lg:h-72 bg-gradient-to-br from-green-400 to-blue-500 flex items-center justify-center">
+                <span className="text-4xl sm:text-5xl lg:text-6xl text-white font-bold">
                   {pool.title.substring(0, 2).toUpperCase()}
                 </span>
               </div>
             )}
-            <div className="bg-white px-8 py-8">
+            <div className="bg-white px-4 py-6 sm:px-6 sm:py-7 lg:px-8 lg:py-8">
               <div className="flex flex-wrap items-center gap-3 text-sm text-gray-500 uppercase tracking-widest">
                 <span className={`rounded-full border px-3 py-1 text-xs font-semibold ${
                   pool.category === "FOOD_STUFFS" 
@@ -246,25 +246,25 @@ function PoolDetailPageContent() {
                 <span>{daysLeft} days left</span>
               </div>
 
-              <h1 className="mt-4 text-4xl font-bold text-gray-900">{pool.title}</h1>
-              <p className="mt-4 text-lg text-gray-600 leading-relaxed">{pool.description}</p>
+              <h1 className="mt-4 text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900">{pool.title}</h1>
+              <p className="mt-4 text-base sm:text-lg text-gray-600 leading-relaxed">{pool.description}</p>
 
-              <div className="mt-8 grid gap-6 sm:grid-cols-4">
+              <div className="mt-6 sm:mt-8 grid gap-4 sm:gap-6 grid-cols-2 sm:grid-cols-4">
                 <div>
-                  <p className="text-sm text-gray-500">Goal</p>
-                  <p className="text-2xl font-semibold text-gray-900">{formatCurrency(pool.goal)}</p>
+                  <p className="text-xs sm:text-sm text-gray-500">Goal</p>
+                  <p className="text-lg sm:text-xl lg:text-2xl font-semibold text-gray-900 truncate">{formatCurrency(pool.goal)}</p>
                 </div>
                 <div>
-                  <p className="text-sm text-gray-500">Raised</p>
-                  <p className="text-2xl font-semibold text-green-700">{formatCurrency(pool.currentAmount)}</p>
+                  <p className="text-xs sm:text-sm text-gray-500">Raised</p>
+                  <p className="text-lg sm:text-xl lg:text-2xl font-semibold text-green-700 truncate">{formatCurrency(pool.currentAmount)}</p>
                 </div>
                 <div>
-                  <p className="text-sm text-gray-500">Contributors</p>
-                  <p className="text-2xl font-semibold text-gray-900">{pool.currentContributors}/{pool.contributors}</p>
+                  <p className="text-xs sm:text-sm text-gray-500">Contributors</p>
+                  <p className="text-lg sm:text-xl lg:text-2xl font-semibold text-gray-900">{pool.currentContributors}/{pool.contributors}</p>
                 </div>
                 <div>
-                  <p className="text-sm text-gray-500">Contribution</p>
-                  <p className="text-2xl font-semibold text-green-800">{formatCurrency(contributionPerPerson)}</p>
+                  <p className="text-xs sm:text-sm text-gray-500">Contribution</p>
+                  <p className="text-lg sm:text-xl lg:text-2xl font-semibold text-green-800 truncate">{formatCurrency(contributionPerPerson)}</p>
                 </div>
               </div>
 
@@ -430,9 +430,9 @@ function PoolDetailPageContent() {
               </svg>
             </button>
 
-            <div className="grid md:grid-cols-2">
+            <div className="grid md:grid-cols-2 max-h-[90vh] overflow-y-auto">
               {/* Left Column - Slot Selection */}
-              <div className="p-8 bg-gradient-to-br from-green-50 via-white to-blue-50">
+              <div className="p-4 sm:p-6 md:p-8 bg-gradient-to-br from-green-50 via-white to-blue-50">
                 <div className="mb-6">
                   <h2 className="text-2xl font-bold text-gray-900">Select Slots</h2>
                   <p className="text-gray-600 mt-1 text-sm">
@@ -507,7 +507,7 @@ function PoolDetailPageContent() {
               </div>
 
               {/* Right Column - Order Summary */}
-              <div className="p-8 bg-gray-50 flex flex-col">
+              <div className="p-4 sm:p-6 md:p-8 bg-gray-50 flex flex-col">
                 <div className="mb-6">
                   <h2 className="text-2xl font-bold text-gray-900">Order Summary</h2>
                   <p className="text-gray-600 mt-1 text-sm">Review your contribution details</p>

@@ -137,7 +137,7 @@ function SignInPageContent() {
                   onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                   required
                   placeholder="you@example.com"
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent outline-none transition-all"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent outline-none transition-all text-gray-900 placeholder:text-gray-400"
                 />
               </div>
 
@@ -151,7 +151,7 @@ function SignInPageContent() {
                   onChange={(e) => setFormData({ ...formData, password: e.target.value })}
                   required
                   placeholder="Enter your password"
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent outline-none transition-all"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent outline-none transition-all text-gray-900 placeholder:text-gray-400"
                 />
               </div>
 

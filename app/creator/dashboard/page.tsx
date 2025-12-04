@@ -334,120 +334,120 @@ export default function CreatorDashboard() {
         {activeTab === "overview" && (
           <div className="space-y-6">
             {/* Stats Grid */}
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-              <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
-                <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 bg-gradient-to-br from-indigo-400 to-indigo-600 rounded-xl flex items-center justify-center shadow-lg shadow-indigo-200">
-                    <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+              <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-4 sm:p-5 lg:p-6">
+                <div className="flex items-center gap-3 sm:gap-4">
+                  <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-indigo-400 to-indigo-600 rounded-xl flex items-center justify-center shadow-lg shadow-indigo-200 flex-shrink-0">
+                    <svg className="w-5 h-5 sm:w-6 sm:h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
                     </svg>
                   </div>
-                  <div>
+                  <div className="min-w-0 flex-1">
                     <p className="text-xs font-medium text-gray-500 uppercase">Total Pools</p>
-                    <p className="text-2xl font-bold text-gray-900">{stats?.totalPools || 0}</p>
+                    <p className="text-lg sm:text-xl lg:text-2xl font-bold text-gray-900">{stats?.totalPools || 0}</p>
                   </div>
                 </div>
               </div>
 
-              <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
-                <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 bg-gradient-to-br from-green-400 to-green-600 rounded-xl flex items-center justify-center shadow-lg shadow-green-200">
-                    <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-4 sm:p-5 lg:p-6">
+                <div className="flex items-center gap-3 sm:gap-4">
+                  <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-green-400 to-green-600 rounded-xl flex items-center justify-center shadow-lg shadow-green-200 flex-shrink-0">
+                    <svg className="w-5 h-5 sm:w-6 sm:h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
                   </div>
-                  <div>
+                  <div className="min-w-0 flex-1">
                     <p className="text-xs font-medium text-gray-500 uppercase">Total Raised</p>
-                    <p className="text-2xl font-bold text-gray-900">{formatCurrency(stats?.totalRaised || 0)}</p>
+                    <p className="text-lg sm:text-xl lg:text-2xl font-bold text-gray-900 truncate">{formatCurrency(stats?.totalRaised || 0)}</p>
                   </div>
                 </div>
               </div>
 
-              <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
-                <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 bg-gradient-to-br from-purple-400 to-purple-600 rounded-xl flex items-center justify-center shadow-lg shadow-purple-200">
-                    <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-4 sm:p-5 lg:p-6">
+                <div className="flex items-center gap-3 sm:gap-4">
+                  <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-purple-400 to-purple-600 rounded-xl flex items-center justify-center shadow-lg shadow-purple-200 flex-shrink-0">
+                    <svg className="w-5 h-5 sm:w-6 sm:h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" />
                     </svg>
                   </div>
-                  <div>
+                  <div className="min-w-0 flex-1">
                     <p className="text-xs font-medium text-gray-500 uppercase">Contributors</p>
-                    <p className="text-2xl font-bold text-gray-900">{stats?.totalContributors || 0}</p>
+                    <p className="text-lg sm:text-xl lg:text-2xl font-bold text-gray-900">{stats?.totalContributors || 0}</p>
                   </div>
                 </div>
               </div>
 
-              <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
-                <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 bg-gradient-to-br from-amber-400 to-orange-500 rounded-xl flex items-center justify-center shadow-lg shadow-amber-200">
-                    <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-4 sm:p-5 lg:p-6">
+                <div className="flex items-center gap-3 sm:gap-4">
+                  <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-amber-400 to-orange-500 rounded-xl flex items-center justify-center shadow-lg shadow-amber-200 flex-shrink-0">
+                    <svg className="w-5 h-5 sm:w-6 sm:h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4" />
                     </svg>
                   </div>
-                  <div>
+                  <div className="min-w-0 flex-1">
                     <p className="text-xs font-medium text-gray-500 uppercase">Pending Deliveries</p>
-                    <p className="text-2xl font-bold text-gray-900">{stats?.pendingDeliveries || 0}</p>
+                    <p className="text-lg sm:text-xl lg:text-2xl font-bold text-gray-900">{stats?.pendingDeliveries || 0}</p>
                   </div>
                 </div>
               </div>
             </div>
 
             {/* Quick Actions & Recent Activity */}
-            <div className="grid lg:grid-cols-2 gap-6">
+            <div className="grid lg:grid-cols-2 gap-4 sm:gap-6">
               {/* Quick Actions */}
-              <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
-                <h3 className="text-lg font-semibold text-gray-900 mb-4">Quick Actions</h3>
-                <div className="grid grid-cols-2 gap-3">
+              <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-4 sm:p-5 lg:p-6">
+                <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-3 sm:mb-4">Quick Actions</h3>
+                <div className="grid grid-cols-2 gap-2 sm:gap-3">
                   <button
                     onClick={() => setIsCreateModalOpen(true)}
-                    className="flex flex-col items-center gap-2 p-4 bg-gradient-to-br from-indigo-50 to-purple-50 rounded-xl border border-indigo-100 hover:border-indigo-300 transition group"
+                    className="flex flex-col items-center gap-1 sm:gap-2 p-3 sm:p-4 bg-gradient-to-br from-indigo-50 to-purple-50 rounded-xl border border-indigo-100 hover:border-indigo-300 transition group"
                   >
-                    <div className="w-10 h-10 bg-indigo-100 rounded-lg flex items-center justify-center group-hover:bg-indigo-200 transition">
-                      <svg className="w-5 h-5 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <div className="w-8 h-8 sm:w-10 sm:h-10 bg-indigo-100 rounded-lg flex items-center justify-center group-hover:bg-indigo-200 transition">
+                      <svg className="w-4 h-4 sm:w-5 sm:h-5 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
                       </svg>
                     </div>
-                    <span className="text-sm font-medium text-gray-700">Create Pool</span>
+                    <span className="text-xs sm:text-sm font-medium text-gray-700">Create Pool</span>
                   </button>
                   <button
                     onClick={() => setActiveTab("deliveries")}
-                    className="flex flex-col items-center gap-2 p-4 bg-gradient-to-br from-amber-50 to-orange-50 rounded-xl border border-amber-100 hover:border-amber-300 transition group"
+                    className="flex flex-col items-center gap-1 sm:gap-2 p-3 sm:p-4 bg-gradient-to-br from-amber-50 to-orange-50 rounded-xl border border-amber-100 hover:border-amber-300 transition group"
                   >
-                    <div className="w-10 h-10 bg-amber-100 rounded-lg flex items-center justify-center group-hover:bg-amber-200 transition">
-                      <svg className="w-5 h-5 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <div className="w-8 h-8 sm:w-10 sm:h-10 bg-amber-100 rounded-lg flex items-center justify-center group-hover:bg-amber-200 transition">
+                      <svg className="w-4 h-4 sm:w-5 sm:h-5 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4" />
                       </svg>
                     </div>
-                    <span className="text-sm font-medium text-gray-700">Manage Deliveries</span>
+                    <span className="text-xs sm:text-sm font-medium text-gray-700 text-center">Manage Deliveries</span>
                   </button>
                   <button
                     onClick={() => setActiveTab("contributors")}
-                    className="flex flex-col items-center gap-2 p-4 bg-gradient-to-br from-green-50 to-emerald-50 rounded-xl border border-green-100 hover:border-green-300 transition group"
+                    className="flex flex-col items-center gap-1 sm:gap-2 p-3 sm:p-4 bg-gradient-to-br from-green-50 to-emerald-50 rounded-xl border border-green-100 hover:border-green-300 transition group"
                   >
-                    <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center group-hover:bg-green-200 transition">
-                      <svg className="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <div className="w-8 h-8 sm:w-10 sm:h-10 bg-green-100 rounded-lg flex items-center justify-center group-hover:bg-green-200 transition">
+                      <svg className="w-4 h-4 sm:w-5 sm:h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" />
                       </svg>
                     </div>
-                    <span className="text-sm font-medium text-gray-700">View Contributors</span>
+                    <span className="text-xs sm:text-sm font-medium text-gray-700 text-center">View Contributors</span>
                   </button>
                   <button
                     onClick={() => setActiveTab("transactions")}
-                    className="flex flex-col items-center gap-2 p-4 bg-gradient-to-br from-blue-50 to-cyan-50 rounded-xl border border-blue-100 hover:border-blue-300 transition group"
+                    className="flex flex-col items-center gap-1 sm:gap-2 p-3 sm:p-4 bg-gradient-to-br from-blue-50 to-cyan-50 rounded-xl border border-blue-100 hover:border-blue-300 transition group"
                   >
-                    <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center group-hover:bg-blue-200 transition">
-                      <svg className="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <div className="w-8 h-8 sm:w-10 sm:h-10 bg-blue-100 rounded-lg flex items-center justify-center group-hover:bg-blue-200 transition">
+                      <svg className="w-4 h-4 sm:w-5 sm:h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
                       </svg>
                     </div>
-                    <span className="text-sm font-medium text-gray-700">Transactions</span>
+                    <span className="text-xs sm:text-sm font-medium text-gray-700">Transactions</span>
                   </button>
                 </div>
               </div>
 
               {/* Recent Transactions */}
-              <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
-                <h3 className="text-lg font-semibold text-gray-900 mb-4">Recent Transactions</h3>
+              <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-4 sm:p-5 lg:p-6">
+                <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-3 sm:mb-4">Recent Transactions</h3>
                 {contributions.length === 0 ? (
                   <div className="text-center py-8 text-gray-500">
                     <p>No transactions yet</p>
@@ -591,16 +591,17 @@ export default function CreatorDashboard() {
         {/* Contributors Tab */}
         {activeTab === "contributors" && (
           <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-            <div className="p-6 border-b border-gray-100">
-              <h3 className="text-lg font-semibold text-gray-900">All Contributors ({contributions.length})</h3>
+            <div className="p-4 sm:p-6 border-b border-gray-100">
+              <h3 className="text-base sm:text-lg font-semibold text-gray-900">All Contributors ({contributions.length})</h3>
             </div>
             {contributions.length === 0 ? (
-              <div className="p-12 text-center">
+              <div className="p-8 sm:p-12 text-center">
                 <p className="text-gray-500">No contributors yet</p>
               </div>
             ) : (
               <div className="overflow-x-auto">
-                <table className="w-full">
+                <div className="inline-block min-w-full align-middle">
+                <table className="min-w-full w-full">
                   <thead className="bg-gray-50">
                     <tr>
                       <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase">Contributor</th>
@@ -633,6 +634,7 @@ export default function CreatorDashboard() {
                     ))}
                   </tbody>
                 </table>
+                </div>
               </div>
             )}
           </div>
@@ -641,16 +643,17 @@ export default function CreatorDashboard() {
         {/* Transactions Tab */}
         {activeTab === "transactions" && (
           <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-            <div className="p-6 border-b border-gray-100">
-              <h3 className="text-lg font-semibold text-gray-900">Transaction History</h3>
+            <div className="p-4 sm:p-6 border-b border-gray-100">
+              <h3 className="text-base sm:text-lg font-semibold text-gray-900">Transaction History</h3>
             </div>
             {contributions.length === 0 ? (
-              <div className="p-12 text-center">
+              <div className="p-8 sm:p-12 text-center">
                 <p className="text-gray-500">No transactions yet</p>
               </div>
             ) : (
               <div className="overflow-x-auto">
-                <table className="w-full">
+                <div className="inline-block min-w-full align-middle">
+                <table className="min-w-full w-full">
                   <thead className="bg-gray-50">
                     <tr>
                       <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase">Reference</th>
@@ -682,6 +685,7 @@ export default function CreatorDashboard() {
                     ))}
                   </tbody>
                 </table>
+                </div>
               </div>
             )}
           </div>
@@ -690,9 +694,9 @@ export default function CreatorDashboard() {
         {/* Deliveries Tab */}
         {activeTab === "deliveries" && (
           <div className="space-y-4">
-            <div className="flex justify-between items-center">
-              <h3 className="text-lg font-semibold text-gray-900">Delivery Management</h3>
-              <div className="flex gap-2 text-sm">
+            <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3">
+              <h3 className="text-base sm:text-lg font-semibold text-gray-900">Delivery Management</h3>
+              <div className="flex gap-2 text-xs sm:text-sm">
                 <span className="px-3 py-1 bg-amber-100 text-amber-700 rounded-full font-medium">
                   {pendingDeliveries.length} Pending
                 </span>
@@ -764,7 +768,7 @@ export default function CreatorDashboard() {
       {/* Create Pool Modal */}
       {isCreateModalOpen && (
         <div 
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50"
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 p-4"
           onClick={(e) => {
             if (e.target === e.currentTarget) {
               setIsCreateModalOpen(false);
@@ -783,14 +787,14 @@ export default function CreatorDashboard() {
               });
             }
           }}
-        >
+          >
           <div 
-            className="bg-white rounded-2xl shadow-xl max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto"
+            className="bg-white rounded-2xl shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="p-6 border-b border-gray-200">
+            <div className="p-4 sm:p-6 border-b border-gray-200">
               <div className="flex justify-between items-center">
-                <h2 className="text-2xl font-bold text-gray-900">Create New Pool</h2>
+                <h2 className="text-xl sm:text-2xl font-bold text-gray-900">Create New Pool</h2>
                 <button
                   onClick={() => {
                     setIsCreateModalOpen(false);

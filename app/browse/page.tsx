@@ -89,21 +89,21 @@ export default function BrowsePage() {
       <SiteHeader />
 
       {/* Header Section */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-12 pb-8">
-        <div className="text-center mb-8">
-          <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 sm:pt-12 pb-6 sm:pb-8">
+        <div className="text-center mb-6 sm:mb-8">
+          <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-900 mb-3 sm:mb-4">
             Browse Active Pools
           </h1>
-          <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+          <p className="text-base sm:text-lg md:text-xl text-gray-600 max-w-2xl mx-auto px-4">
             Join existing pools and contribute to reach collective goals
           </p>
         </div>
 
         {/* Filters */}
-        <div className="flex flex-wrap justify-center gap-4 mb-8">
+        <div className="flex flex-wrap justify-center gap-2 sm:gap-3 md:gap-4 mb-6 sm:mb-8 px-2">
           <button 
             onClick={() => setFilter("all")}
-            className={`px-6 py-2 rounded-full font-semibold transition-colors ${
+            className={`px-4 sm:px-6 py-2 text-sm sm:text-base rounded-full font-semibold transition-colors ${
               filter === "all" 
                 ? "bg-green-600 text-white hover:bg-green-700" 
                 : "bg-white text-gray-700 border border-gray-300 hover:bg-gray-50"
@@ -113,7 +113,7 @@ export default function BrowsePage() {
           </button>
           <button 
             onClick={() => setFilter("FOOD_STUFFS")}
-            className={`px-6 py-2 rounded-full font-semibold transition-colors ${
+            className={`px-4 sm:px-6 py-2 text-sm sm:text-base rounded-full font-semibold transition-colors ${
               filter === "FOOD_STUFFS" 
                 ? "bg-green-600 text-white hover:bg-green-700" 
                 : "bg-white text-gray-700 border border-gray-300 hover:bg-gray-50"
@@ -123,7 +123,7 @@ export default function BrowsePage() {
           </button>
           <button 
             onClick={() => setFilter("LIVESTOCK")}
-            className={`px-6 py-2 rounded-full font-semibold transition-colors ${
+            className={`px-4 sm:px-6 py-2 text-sm sm:text-base rounded-full font-semibold transition-colors ${
               filter === "LIVESTOCK" 
                 ? "bg-green-600 text-white hover:bg-green-700" 
                 : "bg-white text-gray-700 border border-gray-300 hover:bg-gray-50"
@@ -154,7 +154,7 @@ export default function BrowsePage() {
             </Link>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
             {filteredPools.map((pool) => {
               const progress = pool.goal > 0 ? (pool.currentAmount / pool.goal) * 100 : 0;
               const remaining = pool.goal - pool.currentAmount;
@@ -171,7 +171,7 @@ export default function BrowsePage() {
                   className="bg-white rounded-2xl overflow-hidden shadow-lg border border-gray-100 hover:shadow-xl transition-all transform hover:-translate-y-1"
                 >
                   {/* Pool Image */}
-                  <div className="relative h-40 w-full">
+                  <div className="relative h-36 sm:h-40 w-full">
                     {pool.image ? (
                       <Image
                         src={pool.image}
@@ -194,10 +194,10 @@ export default function BrowsePage() {
                     </div>
                   </div>
 
-                  <div className="p-6">
+                  <div className="p-4 sm:p-5 lg:p-6">
 
                   {/* Pool Info */}
-                  <h3 className="text-xl font-bold text-gray-900 mb-2">{pool.title}</h3>
+                  <h3 className="text-lg sm:text-xl font-bold text-gray-900 mb-2 line-clamp-2">{pool.title}</h3>
                   <p className="text-gray-600 text-sm mb-4 line-clamp-2">{pool.description}</p>
 
                   {/* Location */}
