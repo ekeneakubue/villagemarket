@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import Link from "next/link";
 import { useParams, useSearchParams } from "next/navigation";
 import SiteHeader from "@/components/SiteHeader";
@@ -55,7 +55,7 @@ function getDaysLeft(deadline: string) {
   return Math.max(0, diffDays);
 }
 
-export default function PoolDetailPage() {
+function PoolDetailPageContent() {
   const params = useParams();
   const searchParams = useSearchParams();
   const slug = typeof params?.slug === "string" ? params.slug : "";
@@ -602,5 +602,24 @@ export default function PoolDetailPage() {
         </div>
       )}
     </div>
+  );
+}
+
+export default function PoolDetailPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-gradient-to-b from-green-50 via-white to-blue-50">
+        <SiteHeader />
+        <main className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+          <div className="text-center py-20">
+            <div className="inline-block animate-spin rounded-full h-12 w-12 border-4 border-green-600 border-t-transparent"></div>
+            <p className="mt-4 text-gray-600">Loading pool details...</p>
+          </div>
+        </main>
+        <SiteFooter />
+      </div>
+    }>
+      <PoolDetailPageContent />
+    </Suspense>
   );
 }

@@ -1,7 +1,7 @@
 "use client";
 // Admin Dashboard - Fully Responsive for All Devices
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import Link from "next/link";
 import { useSearchParams, useRouter } from "next/navigation";
 
@@ -309,7 +309,7 @@ const lgaByState: Record<string, string[]> = {
 
 type TabType = "overview" | "pools" | "users" | "creators" | "teams" | "transactions";
 
-export default function AdminDashboard() {
+function AdminDashboardContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
   
@@ -3963,3 +3963,17 @@ export default function AdminDashboard() {
   );
 }
 
+export default function AdminDashboard() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="inline-block animate-spin rounded-full h-12 w-12 border-4 border-green-600 border-t-transparent"></div>
+          <p className="mt-4 text-gray-600">Loading dashboard...</p>
+        </div>
+      </div>
+    }>
+      <AdminDashboardContent />
+    </Suspense>
+  );
+}
