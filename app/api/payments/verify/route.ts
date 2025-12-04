@@ -80,16 +80,9 @@ export async function GET(request: NextRequest) {
       });
     }
 
-    // Redirect to success page
-    const pool = await prisma.pool.findUnique({
-      where: { id: contribution.poolId },
-    });
-
+    // Redirect to contributor dashboard with success message
     return NextResponse.redirect(
-      new URL(
-        `/pools/${pool?.slug || ""}?success=payment_complete`,
-        request.url
-      )
+      new URL("/dashboard?payment=success", request.url)
     );
   } catch (error) {
     console.error("Payment verification error:", error);

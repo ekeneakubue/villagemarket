@@ -1,8 +1,8 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 
 interface Pool {
   id: string;
@@ -81,13 +81,27 @@ function getStatusColor(status: string) {
   }
 }
 
-export default function ContributorDashboard() {
+function ContributorDashboardContent() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [user, setUser] = useState<User | null>(null);
   const [contributions, setContributions] = useState<Contribution[]>([]);
   const [stats, setStats] = useState<Stats | null>(null);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState<"all" | "active" | "completed">("all");
+  const [showPaymentSuccess, setShowPaymentSuccess] = useState(false);
+
+  // Check for payment success
+  useEffect(() => {
+    const paymentStatus = searchParams.get("payment");
+    if (paymentStatus === "success") {
+      setShowPaymentSuccess(true);
+      // Auto-hide after 6 seconds
+      setTimeout(() => setShowPaymentSuccess(false), 6000);
+      // Clean up URL
+      router.replace("/dashboard", { scroll: false });
+    }
+  }, [searchParams, router]);
 
   useEffect(() => {
     const userData = localStorage.getItem("user");
@@ -181,6 +195,41 @@ export default function ContributorDashboard() {
           </h1>
           <p className="text-gray-600 mt-2">Track your contributions and pool progress</p>
         </div>
+
+        {/* Payment Success Message */}
+        {showPaymentSuccess && (
+          <div className="mb-8 bg-gradient-to-r from-green-50 to-emerald-50 border-2 border-green-200 rounded-2xl p-6 shadow-lg animate-in slide-in-from-top-2 fade-in duration-500">
+            <div className="flex items-start gap-4">
+              <div className="flex-shrink-0">
+                <div className="w-12 h-12 bg-green-500 rounded-full flex items-center justify-center animate-bounce">
+                  <svg className="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+                  </svg>
+                </div>
+              </div>
+              <div className="flex-1">
+                <h3 className="text-xl font-bold text-green-800 mb-2">🎉 Payment Successful!</h3>
+                <p className="text-green-700 mb-3">
+                  Thank you for your contribution! Your payment has been processed successfully and your contribution has been added to the pool.
+                </p>
+                <div className="flex items-center gap-2 text-sm text-green-600">
+                  <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                  </svg>
+                  <span className="font-medium">Your contribution is now active</span>
+                </div>
+              </div>
+              <button
+                onClick={() => setShowPaymentSuccess(false)}
+                className="flex-shrink-0 text-green-600 hover:text-green-800 transition-colors"
+              >
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+          </div>
+        )}
 
         {/* Stats Cards */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
@@ -464,3 +513,17 @@ export default function ContributorDashboard() {
   );
 }
 
+export default function ContributorDashboard() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-white to-teal-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="inline-block animate-spin rounded-full h-12 w-12 border-4 border-emerald-600 border-t-transparent"></div>
+          <p className="mt-4 text-gray-600">Loading your dashboard...</p>
+        </div>
+      </div>
+    }>
+      <ContributorDashboardContent />
+    </Suspense>
+  );
+}
