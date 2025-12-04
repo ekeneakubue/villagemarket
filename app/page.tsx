@@ -12,7 +12,7 @@ const heroSlides = [
     description: "Source food, livestock, and essentials together with verified contribution pools. Village Market handles the logistics so you stay focused on your community.",
     ctaLabel: "Browse community pools",
     ctaHref: "/browse",
-    image: "/images/cows/cow1.WEBP",
+    image: "/images/caroucel/slide1.png",
   },
   {
     title: "From pledges to fulfilled deliveries",
@@ -21,7 +21,7 @@ const heroSlides = [
       "Track every contribution, know when items are purchased, and get real-time proof of delivery. Everyone sees the same dashboard.",
     ctaLabel: "See how it works",
     ctaHref: "#how-it-works",
-    image: "/images/rams/ram2.JPEG",
+    image: "/images/caroucel/slide2.png",
   },
   {
     title: "Stronger prices for rural and urban buyers",
@@ -30,7 +30,7 @@ const heroSlides = [
       "Bundle demand across towns, lock in wholesale rates, and split the benefits fairly. Village Market connects you to trusted vendors.",
     ctaLabel: "Start a market pool",
     ctaHref: "/browse",
-    image: "/images/goats/goat3.jpg",
+    image: "/images/caroucel/slide3.png",
   },
 ];
 
@@ -96,39 +96,41 @@ export default function Home() {
           </div>
         ))}
 
-        {/* Controls */}
-        <div className="relative z-10 flex flex-col items-center gap-4 pb-10">
-          <div className="flex items-center gap-3 bg-white/80 backdrop-blur rounded-full px-4 py-2 shadow-lg">
+        {/* Side Controls */}
+        <button
+          type="button"
+          onClick={handlePrev}
+          className="absolute left-4 top-1/2 -translate-y-1/2 z-10 h-12 w-12 rounded-full bg-white/20 backdrop-blur-sm text-white flex items-center justify-center hover:bg-white/30 transition-all"
+          aria-label="Previous slide"
+        >
+          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={3}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
+          </svg>
+        </button>
+        <button
+          type="button"
+          onClick={handleNext}
+          className="absolute right-4 top-1/2 -translate-y-1/2 z-10 h-12 w-12 rounded-full bg-white/20 backdrop-blur-sm text-white flex items-center justify-center hover:bg-white/30 transition-all"
+          aria-label="Next slide"
+        >
+          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={3}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+          </svg>
+        </button>
+
+        {/* Dot Indicators */}
+        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-10 flex items-center gap-2">
+          {heroSlides.map((_, index) => (
             <button
+              key={index}
               type="button"
-              onClick={handlePrev}
-              className="h-9 w-9 rounded-full bg-gray-900 text-white text-lg leading-none hover:bg-gray-700"
-              aria-label="Previous slide"
-            >
-              ‹
-            </button>
-            <div className="flex items-center gap-2">
-              {heroSlides.map((_, index) => (
-                <button
-                  key={index}
-                  type="button"
-                  onClick={() => setActiveSlide(index)}
-                  className={`h-2 rounded-full transition-all ${
-                    index === activeSlide ? "w-6 bg-gray-900" : "w-2 bg-gray-400"
-                  }`}
-                  aria-label={`Go to slide ${index + 1}`}
-                />
-              ))}
-            </div>
-            <button
-              type="button"
-              onClick={handleNext}
-              className="h-9 w-9 rounded-full bg-gray-900 text-white text-lg leading-none hover:bg-gray-700"
-              aria-label="Next slide"
-            >
-              ›
-            </button>
-          </div>
+              onClick={() => setActiveSlide(index)}
+              className={`h-2 rounded-full transition-all ${
+                index === activeSlide ? "w-8 bg-white" : "w-2 bg-white/50"
+              }`}
+              aria-label={`Go to slide ${index + 1}`}
+            />
+          ))}
         </div>
       </section>
 

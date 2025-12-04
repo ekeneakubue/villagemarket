@@ -475,6 +475,37 @@ function AdminDashboardContent() {
     message: string;
   }>({ show: false, type: "success", title: "", message: "" });
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [currentUser, setCurrentUser] = useState<User | null>(null);
+  const [isAuthorized, setIsAuthorized] = useState(false);
+  const [authLoading, setAuthLoading] = useState(true);
+
+  // Check authentication and authorization
+  useEffect(() => {
+    const userData = localStorage.getItem("user");
+    
+    if (!userData) {
+      router.push("/signin?redirect=/admin");
+      return;
+    }
+
+    try {
+      const user = JSON.parse(userData);
+      
+      if (user.role !== "ADMIN") {
+        router.push("/dashboard"); // Redirect non-admin users to their dashboard
+        return;
+      }
+
+      setCurrentUser(user);
+      setIsAuthorized(true);
+    } catch (error) {
+      console.error("Error parsing user data:", error);
+      localStorage.removeItem("user");
+      router.push("/signin?redirect=/admin");
+    } finally {
+      setAuthLoading(false);
+    }
+  }, [router]);
 
   const showToast = (type: "success" | "error", title: string, message: string) => {
     setToast({ show: true, type, title, message });
@@ -774,6 +805,23 @@ function AdminDashboardContent() {
     }
   };
 
+  // Show loading state while checking authorization
+  if (authLoading) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="inline-block animate-spin rounded-full h-12 w-12 border-4 border-green-600 border-t-transparent"></div>
+          <p className="mt-4 text-gray-600">Verifying access...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Don't render anything if not authorized (redirecting)
+  if (!isAuthorized || !currentUser) {
+    return null;
+  }
+
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Toast Notification */}
@@ -899,10 +947,25 @@ function AdminDashboardContent() {
               </Link>
             </div>
             <div className="flex items-center space-x-2 sm:space-x-4">
-              <div className="text-xs sm:text-sm text-gray-50 hidden sm:block">
-                Admin User
+              <div className="flex items-center gap-2">
+                {currentUser.avatar ? (
+                  <img src={currentUser.avatar} alt={currentUser.name} className="w-8 h-8 rounded-full object-cover" />
+                ) : (
+                  <div className="w-8 h-8 rounded-full bg-green-700 flex items-center justify-center text-white text-sm font-semibold">
+                    {currentUser.name.split(" ").map((n) => n[0]).join("").toUpperCase().slice(0, 2)}
+                  </div>
+                )}
+                <div className="text-xs sm:text-sm text-gray-50 hidden sm:block">
+                  {currentUser.name}
+                </div>
               </div>
-              <button className="px-3 py-2 text-xs sm:text-sm text-gray-50 hover:bg-green-800 rounded-lg transition-colors">
+              <button 
+                onClick={() => {
+                  localStorage.removeItem("user");
+                  router.push("/");
+                }}
+                className="px-3 py-2 text-xs sm:text-sm text-gray-50 hover:bg-green-800 rounded-lg transition-colors"
+              >
                 Logout
               </button>
             </div>
