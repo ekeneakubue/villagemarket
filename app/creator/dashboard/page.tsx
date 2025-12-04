@@ -16,6 +16,9 @@ interface Pool {
   currentAmount: number;
   currentContributors: number;
   location: string;
+  localGovernment: string;
+  town: string | null;
+  street: string | null;
   deadline: string;
   status: "PENDING" | "ACTIVE" | "COMPLETED" | "CANCELLED";
   createdAt: string;
@@ -150,7 +153,24 @@ export default function CreatorDashboard() {
   const [activeTab, setActiveTab] = useState<TabType>("overview");
   const [updatingDelivery, setUpdatingDelivery] = useState<string | null>(null);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [selectedPool, setSelectedPool] = useState<Pool | null>(null);
   const [formData, setFormData] = useState({
+    image: "",
+    title: "",
+    description: "",
+    category: "Food Stuffs",
+    goal: "",
+    contributors: "",
+    location: "",
+    localGovernment: "",
+    town: "",
+    street: "",
+    deadline: "",
+  });
+
+  const [editFormData, setEditFormData] = useState({
+    id: "",
     image: "",
     title: "",
     description: "",
@@ -534,12 +554,29 @@ export default function CreatorDashboard() {
                           >
                             View
                           </Link>
-                          <Link
-                            href={`/admin?tab=pools&edit=${pool.id}`}
+                          <button
+                            onClick={() => {
+                              setSelectedPool(pool);
+                              setEditFormData({
+                                id: pool.id,
+                                image: pool.image || "",
+                                title: pool.title,
+                                description: pool.description,
+                                category: pool.category === "FOOD_STUFFS" ? "Food Stuffs" : "Livestock",
+                                goal: String(pool.goal),
+                                contributors: String(pool.contributors),
+                                location: pool.location,
+                                localGovernment: pool.localGovernment,
+                                town: pool.town || "",
+                                street: pool.street || "",
+                                deadline: new Date(pool.deadline).toISOString().split('T')[0],
+                              });
+                              setIsEditModalOpen(true);
+                            }}
                             className="px-4 py-2 text-sm font-medium text-gray-600 border border-gray-200 rounded-lg hover:bg-gray-50 transition"
                           >
                             Edit
-                          </Link>
+                          </button>
                         </div>
                       </div>
                     </div>
@@ -1116,6 +1153,313 @@ export default function CreatorDashboard() {
                   className="px-6 py-3 bg-green-600 text-white rounded-lg font-semibold hover:bg-green-700 transition-colors"
                 >
                   Create Pool
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* Edit Pool Modal */}
+      {isEditModalOpen && selectedPool && (
+        <div 
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 p-4"
+          onClick={(e) => {
+            if (e.target === e.currentTarget) {
+              setIsEditModalOpen(false);
+              setSelectedPool(null);
+            }
+          }}
+        >
+          <div 
+            className="bg-white rounded-2xl shadow-xl max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="bg-gradient-to-r from-indigo-600 to-purple-600 px-6 py-4 flex justify-between items-center">
+              <h2 className="text-2xl font-bold text-white">Edit Pool</h2>
+              <button
+                onClick={() => {
+                  setIsEditModalOpen(false);
+                  setSelectedPool(null);
+                }}
+                className="text-white/80 hover:text-white transition-colors"
+              >
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+
+            <form
+              onSubmit={async (e) => {
+                e.preventDefault();
+                try {
+                  const response = await fetch(`/api/pools/admin/${editFormData.id}`, {
+                    method: "PUT",
+                    headers: {
+                      "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({
+                      image: editFormData.image || null,
+                      title: editFormData.title,
+                      description: editFormData.description,
+                      category: editFormData.category === "Food Stuffs" ? "FOOD_STUFFS" : "LIVESTOCK",
+                      goal: Number(editFormData.goal),
+                      contributors: Number(editFormData.contributors),
+                      location: editFormData.location,
+                      localGovernment: editFormData.localGovernment,
+                      town: editFormData.town || null,
+                      street: editFormData.street || null,
+                      deadline: editFormData.deadline,
+                    }),
+                  });
+
+                  if (response.ok) {
+                    const updatedPool = await response.json();
+                    setPools((prev) =>
+                      prev.map((p) => (p.id === updatedPool.id ? updatedPool : p))
+                    );
+                    setIsEditModalOpen(false);
+                    setSelectedPool(null);
+                    alert(`Pool "${updatedPool.title}" has been updated successfully!`);
+                  } else {
+                    const error = await response.json();
+                    alert(error.error || "Failed to update pool");
+                  }
+                } catch (error) {
+                  console.error("Error updating pool:", error);
+                  alert("Failed to update pool. Please try again.");
+                }
+              }}
+              className="p-6 space-y-6"
+            >
+              {/* Pool Image Upload */}
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-2">
+                  Pool Image
+                </label>
+                <div className="relative">
+                  <div className="w-full h-40 rounded-xl border-2 border-dashed border-gray-300 bg-gray-50 flex flex-col items-center justify-center overflow-hidden hover:border-indigo-400 transition-colors">
+                    {editFormData.image ? (
+                      <img
+                        src={editFormData.image}
+                        alt="Pool preview"
+                        className="w-full h-full object-cover"
+                      />
+                    ) : (
+                      <>
+                        <svg className="w-10 h-10 text-gray-400 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                        </svg>
+                        <p className="text-sm text-gray-500">Click to upload pool image</p>
+                        <p className="text-xs text-gray-400 mt-1">PNG, JPG up to 5MB</p>
+                      </>
+                    )}
+                    <input
+                      type="file"
+                      accept="image/*"
+                      className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                      onChange={(e) => {
+                        const file = e.target.files?.[0];
+                        if (file) {
+                          const reader = new FileReader();
+                          reader.onloadend = () => {
+                            setEditFormData({ ...editFormData, image: reader.result as string });
+                          };
+                          reader.readAsDataURL(file);
+                        }
+                      }}
+                    />
+                  </div>
+                  {editFormData.image && (
+                    <button
+                      type="button"
+                      onClick={() => setEditFormData({ ...editFormData, image: "" })}
+                      className="absolute top-2 right-2 w-8 h-8 bg-red-500 text-white rounded-full flex items-center justify-center hover:bg-red-600 transition-colors shadow-lg"
+                    >
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                      </svg>
+                    </button>
+                  )}
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-2">
+                  Pool Title *
+                </label>
+                <input
+                  type="text"
+                  required
+                  value={editFormData.title}
+                  onChange={(e) => setEditFormData({ ...editFormData, title: e.target.value })}
+                  placeholder="e.g., Bulk Rice Purchase"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition-all"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-2">
+                  Description *
+                </label>
+                <textarea
+                  required
+                  value={editFormData.description}
+                  onChange={(e) => setEditFormData({ ...editFormData, description: e.target.value })}
+                  placeholder="Describe what this pool is for..."
+                  rows={4}
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition-all resize-none"
+                />
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">
+                    Category *
+                  </label>
+                  <select
+                    required
+                    value={editFormData.category}
+                    onChange={(e) => setEditFormData({ ...editFormData, category: e.target.value })}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition-all"
+                  >
+                    <option value="Food Stuffs">Food Stuffs</option>
+                    <option value="Livestock">Livestock</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">
+                    Goal Amount (NGN) *
+                  </label>
+                  <input
+                    type="number"
+                    required
+                    value={editFormData.goal}
+                    onChange={(e) => setEditFormData({ ...editFormData, goal: e.target.value })}
+                    placeholder="500000"
+                    min="1"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition-all"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-2">
+                  Number of Contributors *
+                </label>
+                <input
+                  type="number"
+                  required
+                  value={editFormData.contributors}
+                  onChange={(e) => setEditFormData({ ...editFormData, contributors: e.target.value })}
+                  placeholder="e.g., 20"
+                  min="1"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition-all"
+                />
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">
+                    Location (State) *
+                  </label>
+                  <select
+                    required
+                    value={editFormData.location}
+                    onChange={(e) => setEditFormData({ ...editFormData, location: e.target.value, localGovernment: "" })}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition-all"
+                  >
+                    <option value="">Select a state</option>
+                    {Object.keys(lgaByState).map((state) => (
+                      <option key={state} value={state}>{state}</option>
+                    ))}
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">
+                    Deadline *
+                  </label>
+                  <input
+                    type="date"
+                    required
+                    value={editFormData.deadline}
+                    onChange={(e) => setEditFormData({ ...editFormData, deadline: e.target.value })}
+                    min={new Date().toISOString().split('T')[0]}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition-all"
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">
+                    Local Government Area *
+                  </label>
+                  <select
+                    required
+                    value={editFormData.localGovernment}
+                    onChange={(e) => setEditFormData({ ...editFormData, localGovernment: e.target.value })}
+                    disabled={!editFormData.location}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition-all disabled:bg-gray-100"
+                  >
+                    <option value="">
+                      {editFormData.location ? "Select LGA" : "Select state first"}
+                    </option>
+                    {editFormData.location && lgaByState[editFormData.location]?.map((lga) => (
+                      <option key={lga} value={lga}>
+                        {lga}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">
+                    Town/City *
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    value={editFormData.town}
+                    onChange={(e) => setEditFormData({ ...editFormData, town: e.target.value })}
+                    placeholder="e.g., Ikeja"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition-all"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">
+                    Street Address
+                  </label>
+                  <input
+                    type="text"
+                    value={editFormData.street}
+                    onChange={(e) => setEditFormData({ ...editFormData, street: e.target.value })}
+                    placeholder="Optional"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition-all"
+                  />
+                </div>
+              </div>
+
+              <div className="flex justify-end space-x-4 pt-4 border-t border-gray-200">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setIsEditModalOpen(false);
+                    setSelectedPool(null);
+                  }}
+                  className="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg font-semibold hover:bg-gray-50 transition-colors"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="px-6 py-3 bg-indigo-600 text-white rounded-lg font-semibold hover:bg-indigo-700 transition-colors"
+                >
+                  Save Changes
                 </button>
               </div>
             </form>
