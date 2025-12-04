@@ -2358,6 +2358,7 @@ export default function AdminDashboard() {
                 role: "",
                 bio: "",
                 avatar: "",
+                displayOrder: "",
               });
             }
           }}
@@ -2376,6 +2377,7 @@ export default function AdminDashboard() {
                     role: "",
                     bio: "",
                     avatar: "",
+                    displayOrder: "",
                   });
                 }}
                 className="text-gray-400 hover:text-gray-600 transition-colors"
@@ -2500,6 +2502,7 @@ export default function AdminDashboard() {
                     role: "",
                     bio: "",
                     avatar: "",
+                    displayOrder: "",
                   });
                 }}
                 className="px-5 py-2 border border-gray-300 rounded-lg text-gray-700 font-semibold hover:bg-gray-50 transition-colors"
