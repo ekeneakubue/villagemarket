@@ -1,14 +1,9 @@
 import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 
-interface Params {
-  params: {
-    id: string;
-  };
-}
-
-export async function GET(request: Request, { params }: Params) {
-  const { id } = params;
+export async function GET(request: Request, context: any) {
+  const params = await context.params;
+  const { id } = params as { id: string };
 
   try {
     const member = await prisma.teamMember.findUnique({
@@ -41,8 +36,9 @@ export async function GET(request: Request, { params }: Params) {
   }
 }
 
-export async function PUT(request: Request, { params }: Params) {
-  const { id } = params;
+export async function PUT(request: Request, context: any) {
+  const params = await context.params;
+  const { id } = params as { id: string };
 
   try {
     const body = await request.json();
@@ -85,8 +81,9 @@ export async function PUT(request: Request, { params }: Params) {
   }
 }
 
-export async function DELETE(request: Request, { params }: Params) {
-  const { id } = params;
+export async function DELETE(request: Request, context: any) {
+  const params = await context.params;
+  const { id } = params as { id: string };
 
   try {
     await prisma.teamMember.delete({
