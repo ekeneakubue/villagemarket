@@ -155,6 +155,7 @@ export default function CreatorDashboard() {
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [selectedPool, setSelectedPool] = useState<Pool | null>(null);
+  const [isEditingSaving, setIsEditingSaving] = useState(false);
   const [formData, setFormData] = useState({
     image: "",
     title: "",
@@ -1193,6 +1194,7 @@ export default function CreatorDashboard() {
             <form
               onSubmit={async (e) => {
                 e.preventDefault();
+                setIsEditingSaving(true);
                 try {
                   const response = await fetch(`/api/pools/admin/${editFormData.id}`, {
                     method: "PUT",
@@ -1229,6 +1231,8 @@ export default function CreatorDashboard() {
                 } catch (error) {
                   console.error("Error updating pool:", error);
                   alert("Failed to update pool. Please try again.");
+                } finally {
+                  setIsEditingSaving(false);
                 }
               }}
               className="p-6 space-y-6"
@@ -1457,9 +1461,17 @@ export default function CreatorDashboard() {
                 </button>
                 <button
                   type="submit"
-                  className="px-6 py-3 bg-indigo-600 text-white rounded-lg font-semibold hover:bg-indigo-700 transition-colors"
+                  disabled={isEditingSaving}
+                  className="px-6 py-3 bg-indigo-600 text-white rounded-lg font-semibold hover:bg-indigo-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                 >
-                  Save Changes
+                  {isEditingSaving ? (
+                    <>
+                      <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                      Saving...
+                    </>
+                  ) : (
+                    'Save Changes'
+                  )}
                 </button>
               </div>
             </form>

@@ -346,6 +346,9 @@ function AdminDashboardContent() {
   const [isTeamModalOpen, setIsTeamModalOpen] = useState(false);
   const [isTeamEditModalOpen, setIsTeamEditModalOpen] = useState(false);
   const [isTeamDeleteModalOpen, setIsTeamDeleteModalOpen] = useState(false);
+  const [isTeamSaving, setIsTeamSaving] = useState(false);
+  const [isUserSaving, setIsUserSaving] = useState(false);
+  const [isCreatorSaving, setIsCreatorSaving] = useState(false);
 
   // Update URL when tab changes
   const handleTabChange = (tab: TabType) => {
@@ -572,6 +575,7 @@ function AdminDashboardContent() {
   };
 
   const handleUpdateUser = async () => {
+    setIsUserSaving(true);
     try {
       const updateData: Record<string, string | null> = {
         avatar: editUserFormData.avatar || null,
@@ -607,6 +611,8 @@ function AdminDashboardContent() {
     } catch (error) {
       console.error("Error updating user:", error);
       showToast("error", "Error", "Failed to update user");
+    } finally {
+      setIsUserSaving(false);
     }
   };
 
@@ -687,6 +693,7 @@ function AdminDashboardContent() {
   };
 
   const handleUpdateTeamMember = async () => {
+    setIsTeamSaving(true);
     try {
       const response = await fetch(`/api/team-members/${editTeamFormData.id}`, {
         method: "PUT",
@@ -714,6 +721,8 @@ function AdminDashboardContent() {
     } catch (error) {
       console.error("Error updating team member:", error);
       showToast("error", "Error", "Failed to update team member");
+    } finally {
+      setIsTeamSaving(false);
     }
   };
 
@@ -2785,9 +2794,17 @@ function AdminDashboardContent() {
               </button>
               <button
                 onClick={handleUpdateTeamMember}
-                className="px-6 py-2 bg-green-600 text-white rounded-lg font-semibold hover:bg-green-700 transition-colors"
+                disabled={isTeamSaving}
+                className="px-6 py-2 bg-green-600 text-white rounded-lg font-semibold hover:bg-green-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
               >
-                Save Changes
+                {isTeamSaving ? (
+                  <>
+                    <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                    Saving...
+                  </>
+                ) : (
+                  'Save Changes'
+                )}
               </button>
             </div>
           </div>
@@ -3863,9 +3880,17 @@ function AdminDashboardContent() {
                 </button>
                 <button
                   onClick={handleUpdateUser}
-                  className="flex-1 px-4 py-3 bg-yellow-500 text-white rounded-lg font-semibold hover:bg-yellow-600 transition-colors"
+                  disabled={isUserSaving}
+                  className="flex-1 px-4 py-3 bg-yellow-500 text-white rounded-lg font-semibold hover:bg-yellow-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                 >
-                  Save Changes
+                  {isUserSaving ? (
+                    <>
+                      <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                      Saving...
+                    </>
+                  ) : (
+                    'Save Changes'
+                  )}
                 </button>
               </div>
             </div>
@@ -4048,6 +4073,7 @@ function AdminDashboardContent() {
               <form
                 onSubmit={async (e) => {
                   e.preventDefault();
+                  setIsCreatorSaving(true);
                   try {
                     const response = await fetch(`/api/creators/${editCreatorFormData.id}`, {
                       method: "PUT",
@@ -4078,6 +4104,8 @@ function AdminDashboardContent() {
                   } catch (error) {
                     console.error("Error updating creator:", error);
                     showToast("error", "Error", "Failed to update creator");
+                  } finally {
+                    setIsCreatorSaving(false);
                   }
                 }}
                 className="space-y-5"
@@ -4237,9 +4265,17 @@ function AdminDashboardContent() {
                   </button>
                   <button
                     type="submit"
-                    className="px-6 py-3 bg-purple-600 text-white rounded-lg font-semibold hover:bg-purple-700 transition-colors"
+                    disabled={isCreatorSaving}
+                    className="px-6 py-3 bg-purple-600 text-white rounded-lg font-semibold hover:bg-purple-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                   >
-                    Save Changes
+                    {isCreatorSaving ? (
+                      <>
+                        <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                        Saving...
+                      </>
+                    ) : (
+                      'Save Changes'
+                    )}
                   </button>
                 </div>
               </form>
