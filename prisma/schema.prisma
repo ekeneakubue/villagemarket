@@ -1,0 +1,156 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id               String     @id @default(cuid())
+  avatar           String?    // Profile photo URL
+  name             String
+  email            String     @unique
+  password         String     // Hashed password
+  phone            String?    @unique
+  role             UserRole   @default(CONTRIBUTOR)
+  status           UserStatus @default(ACTIVE)
+  totalContributed Float      @default(0)
+  createdAt        DateTime   @default(now())
+  updatedAt        DateTime   @updatedAt
+
+  @@map("users")
+}
+
+enum UserRole {
+  ADMIN
+  CONTRIBUTOR
+}
+
+enum UserStatus {
+  ACTIVE
+  SUSPENDED
+  INACTIVE
+}
+
+model Pool {
+  id                  String       @id @default(cuid())
+  slug                String       @unique
+  image               String?      // Pool image URL
+  title               String
+  description         String
+  category            PoolCategory
+  goal                Float        // Target amount in NGN
+  contributors        Int          // Target number of contributors
+  currentAmount       Float        @default(0)  // Amount raised so far
+  currentContributors Int          @default(0)  // Actual contributors so far
+  location            String       // State
+  localGovernment     String
+  town                String?
+  street              String?
+  deadline            DateTime
+  status              PoolStatus   @default(ACTIVE)
+  creatorId           String
+  createdAt           DateTime     @default(now())
+  updatedAt           DateTime     @updatedAt
+
+  @@map("pools")
+}
+
+enum PoolCategory {
+  FOOD_STUFFS
+  LIVESTOCK
+}
+
+enum PoolStatus {
+  PENDING
+  ACTIVE
+  COMPLETED
+  CANCELLED
+}
+
+model Creator {
+  id           String        @id @default(cuid())
+  avatar       String?       // Profile photo URL
+  name         String
+  email        String        @unique
+  password     String        // Hashed password
+  phone        String        @unique
+  organization String?       // Organization or business name
+  address      String?
+  idType       CreatorIdType
+  idNumber     String
+  status       CreatorStatus @default(PENDING)
+  poolsCreated Int           @default(0)
+  totalRaised  Float         @default(0)
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+
+  @@map("creators")
+}
+
+enum CreatorIdType {
+  NIN
+  VOTERS_CARD
+  DRIVERS_LICENSE
+  PASSPORT
+}
+
+enum CreatorStatus {
+  PENDING
+  VERIFIED
+  SUSPENDED
+}
+
+model Contribution {
+  id             String              @id @default(cuid())
+  poolId         String
+  userId         String?             // Optional - for guest contributions
+  email          String
+  name           String
+  phone          String?
+  amount         Float
+  slots          Int                 @default(1) // Number of slots purchased
+  reference      String              @unique // Paystack reference
+  status         ContributionStatus  @default(PENDING)
+  paystackRef    String?             // Paystack transaction reference
+  paidAt         DateTime?
+  deliveryStatus DeliveryStatus      @default(PENDING)
+  deliveredAt    DateTime?
+  deliveryNote   String?
+  createdAt      DateTime            @default(now())
+  updatedAt      DateTime            @updatedAt
+
+  @@map("contributions")
+}
+
+enum ContributionStatus {
+  PENDING
+  SUCCESS
+  FAILED
+}
+
+enum DeliveryStatus {
+  PENDING
+  PROCESSING
+  SHIPPED
+  DELIVERED
+  CANCELLED
+}
+
+model TeamMember {
+  id        String   @id @default(cuid())
+  name      String
+  role      String
+  bio       String
+  avatar    String?  // Emoji or image URL
+  displayOrder Int   @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("team_members")
+}
