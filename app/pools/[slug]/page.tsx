@@ -203,6 +203,8 @@ function PoolDetailPageContent() {
     ? `${pool.town}, ${pool.location}` 
     : `${pool.localGovernment}, ${pool.location}`;
   const isPoolFull = progress >= 100 || pool.status === "COMPLETED" || pool.currentContributors >= pool.contributors;
+  const isSingleContributor = pool.contributors === 1;
+  const primaryCtaLabel = isSingleContributor ? "Pay" : "Contribute";
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-green-50 via-white to-blue-50">
@@ -301,7 +303,7 @@ function PoolDetailPageContent() {
                         : "bg-green-600 text-white shadow-green-600/30 hover:bg-green-700"
                     }`}
                   >
-                    {isPoolFull ? "Completed" : `Contribute ${formatCurrency(contributionPerPerson)}`}
+                    {isPoolFull ? "Completed" : `${primaryCtaLabel} ${formatCurrency(contributionPerPerson)}`}
                   </button>
                 ) : (
                   <div className="space-y-3">
@@ -309,7 +311,7 @@ function PoolDetailPageContent() {
                       href={`/signin?redirect=/pools/${pool.slug}`}
                       className="w-full rounded-2xl bg-green-600 px-6 py-4 text-center text-lg font-semibold text-white shadow-lg shadow-green-600/30 hover:bg-green-700 transition block"
                     >
-                      Sign In to Contribute
+                      {isSingleContributor ? "Sign In to Pay" : "Sign In to Contribute"}
                     </Link>
                     <p className="text-center text-sm text-gray-500">
                       Don&apos;t have an account?{" "}
