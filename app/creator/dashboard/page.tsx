@@ -316,11 +316,9 @@ export default function CreatorDashboard() {
         setCreator(data as any);
         setSettingsMessage("Account updated successfully");
         setSettingsForm((prev) => ({ ...prev, password: "", confirmPassword: "", currentPassword: "" }));
-        setAllowNewPasswordFields(true);
       } else {
         setSettingsError(data.error || "Failed to update account");
         if (data.error === "Current password is incorrect") {
-          setAllowNewPasswordFields(false);
           setSettingsForm((prev) => ({ ...prev, password: "", confirmPassword: "" }));
         }
       }
