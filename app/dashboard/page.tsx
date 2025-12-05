@@ -90,6 +90,14 @@ function ContributorDashboardContent() {
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState<"all" | "active" | "completed">("all");
   const [showPaymentSuccess, setShowPaymentSuccess] = useState(false);
+  const [settingsForm, setSettingsForm] = useState({ phone: "", currentPassword: "", password: "", confirmPassword: "" });
+  const [settingsLoading, setSettingsLoading] = useState(false);
+  const [settingsMessage, setSettingsMessage] = useState<string | null>(null);
+  const [settingsError, setSettingsError] = useState<string | null>(null);
+  const [showCurrentPassword, setShowCurrentPassword] = useState(false);
+  const [showNewPassword, setShowNewPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [currentPasswordStatus, setCurrentPasswordStatus] = useState<"idle" | "checking" | "valid" | "invalid">("idle");
 
   // Check for payment success
   useEffect(() => {
@@ -108,6 +116,7 @@ function ContributorDashboardContent() {
     if (userData) {
       const parsedUser = JSON.parse(userData);
       setUser(parsedUser);
+      setSettingsForm((prev) => ({ ...prev, phone: parsedUser.phone || "" }));
       fetchContributions(parsedUser.id);
     } else {
       router.push("/signin?redirect=/dashboard");
@@ -140,6 +149,102 @@ function ContributorDashboardContent() {
     if (activeTab === "completed") return c.pool?.status === "COMPLETED";
     return true;
   });
+
+  const handleUpdateSettings = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!user) return;
+    setSettingsError(null);
+    setSettingsMessage(null);
+
+    if (!settingsForm.phone.trim()) {
+      setSettingsError("Phone number is required");
+      return;
+    }
+
+    if (settingsForm.password) {
+      if (!settingsForm.currentPassword) {
+        setSettingsError("Current password is required to set a new password");
+        return;
+      }
+      if (currentPasswordStatus !== "valid") {
+        setSettingsError("Please verify your current password before setting a new one");
+        return;
+      }
+      if (settingsForm.password.length < 8) {
+        setSettingsError("Password must be at least 8 characters long");
+        return;
+      }
+      if (settingsForm.password !== settingsForm.confirmPassword) {
+        setSettingsError("Passwords do not match");
+        return;
+      }
+    }
+
+    setSettingsLoading(true);
+    try {
+      const payload: Record<string, string> = {
+        phone: settingsForm.phone,
+      };
+      if (settingsForm.password) {
+        payload.password = settingsForm.password;
+        payload.currentPassword = settingsForm.currentPassword;
+      }
+
+      const response = await fetch(`/api/users/${user.id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+
+      const data = await response.json();
+      if (response.ok) {
+        // persist updated user in localStorage and state
+        localStorage.setItem("user", JSON.stringify(data));
+        setUser(data);
+        setSettingsMessage("Account updated successfully");
+        setSettingsForm((prev) => ({ ...prev, password: "", confirmPassword: "", currentPassword: "" }));
+        setAllowNewPasswordFields(true);
+      } else {
+        setSettingsError(data.error || "Failed to update account");
+        if (data.error === "Current password is incorrect") {
+          setAllowNewPasswordFields(false);
+          setSettingsForm((prev) => ({ ...prev, password: "", confirmPassword: "" }));
+        }
+      }
+    } catch (err) {
+      console.error("Update settings error:", err);
+      setSettingsError("An error occurred. Please try again.");
+    } finally {
+      setSettingsLoading(false);
+    }
+  };
+
+  const verifyCurrentPassword = async () => {
+    if (!user || !settingsForm.currentPassword) {
+      setCurrentPasswordStatus("idle");
+      return;
+    }
+    setCurrentPasswordStatus("checking");
+    try {
+      const res = await fetch("/api/auth/signin", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          email: user.email,
+          password: settingsForm.currentPassword,
+          accountType: "user",
+        }),
+      });
+      if (res.ok) {
+        setCurrentPasswordStatus("valid");
+      } else {
+        setCurrentPasswordStatus("invalid");
+      }
+    } catch (err) {
+      console.error("Verify current password error:", err);
+      setCurrentPasswordStatus("invalid");
+    }
+  };
 
   if (!user || loading) {
     return (
@@ -491,6 +596,181 @@ function ContributorDashboardContent() {
               </svg>
             </Link>
           </div>
+        </div>
+
+        {/* Account Settings */}
+        <div className="mt-8 bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+          <div className="p-6 border-b border-gray-100">
+            <h3 className="text-lg font-semibold text-gray-900">Account Settings</h3>
+            <p className="text-sm text-gray-600 mt-1">Update your phone number and password.</p>
+          </div>
+          <form onSubmit={handleUpdateSettings} className="p-6 space-y-5">
+            {settingsError && (
+              <div className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+                {settingsError}
+              </div>
+            )}
+            {settingsMessage && (
+              <div className="rounded-lg border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-700">
+                {settingsMessage}
+              </div>
+            )}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-2">
+                  Phone Number <span className="text-red-500">*</span>
+                </label>
+                <input
+                  type="tel"
+                  value={settingsForm.phone}
+                  onChange={(e) => setSettingsForm({ ...settingsForm, phone: e.target.value })}
+                  required
+                  placeholder="e.g., 08012345678"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent outline-none transition-all text-gray-900 placeholder:text-gray-400"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-2">
+                  Current Password (required to change password)
+                </label>
+                <div className="relative">
+                  <input
+                    type={showCurrentPassword ? "text" : "password"}
+                    value={settingsForm.currentPassword}
+                    onChange={(e) => {
+                      setSettingsError((prev) =>
+                        prev === "Current password is incorrect" ? null : prev
+                      );
+                      setSettingsForm({ ...settingsForm, currentPassword: e.target.value });
+                      setCurrentPasswordStatus("idle");
+                    }}
+                    placeholder="Enter current password"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent outline-none transition-all text-gray-900 placeholder:text-gray-400 pr-12"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowCurrentPassword((prev) => !prev)}
+                    className="absolute inset-y-0 right-3 flex items-center text-gray-500 hover:text-gray-700"
+                    aria-label={showCurrentPassword ? "Hide current password" : "Show current password"}
+                  >
+                    {showCurrentPassword ? (
+                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.875 18.825A10.05 10.05 0 0112 19c-5 0-9-4-9-7 0-1.06.37-2.063 1.05-2.975M6.228 6.228A9.956 9.956 0 0112 5c5 0 9 4 9 7 0 1.291-.441 2.496-1.2 3.5M3 3l18 18M9.88 9.88a3 3 0 104.24 4.24" />
+                      </svg>
+                    ) : (
+                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.477 0 8.268 2.943 9.542 7-1.274 4.057-5.065 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                      </svg>
+                    )}
+                  </button>
+                </div>
+                <div className="mt-2 flex items-center gap-3">
+                  <button
+                    type="button"
+                    onClick={verifyCurrentPassword}
+                    className="px-3 py-1.5 text-sm font-semibold text-green-700 border border-green-200 rounded-lg hover:bg-green-50 transition-colors"
+                    disabled={currentPasswordStatus === "checking"}
+                  >
+                    {currentPasswordStatus === "checking" ? "Checking..." : "Verify current password"}
+                  </button>
+                  {currentPasswordStatus === "valid" && (
+                    <span className="text-sm text-green-600 font-medium">Current password verified</span>
+                  )}
+                  {currentPasswordStatus === "invalid" && (
+                    <span className="text-sm text-red-600 font-medium">Current password is incorrect</span>
+                  )}
+                </div>
+              </div>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-2">
+                  New Password
+                </label>
+                <div className="relative">
+                  <input
+                    type={showNewPassword ? "text" : "password"}
+                    value={settingsForm.password}
+                    onChange={(e) => setSettingsForm({ ...settingsForm, password: e.target.value })}
+                    placeholder="Leave blank to keep current"
+                    disabled={currentPasswordStatus !== "valid"}
+                    className={`w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent outline-none transition-all text-gray-900 placeholder:text-gray-400 pr-12 ${
+                      currentPasswordStatus !== "valid" ? "bg-gray-50 cursor-not-allowed" : ""
+                    }`}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowNewPassword((prev) => !prev)}
+                    disabled={currentPasswordStatus !== "valid"}
+                    className={`absolute inset-y-0 right-3 flex items-center text-gray-500 hover:text-gray-700 ${
+                      currentPasswordStatus !== "valid" ? "opacity-60 cursor-not-allowed" : ""
+                    }`}
+                    aria-label={showNewPassword ? "Hide new password" : "Show new password"}
+                  >
+                    {showNewPassword ? (
+                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.875 18.825A10.05 10.05 0 0112 19c-5 0-9-4-9-7 0-1.06.37-2.063 1.05-2.975M6.228 6.228A9.956 9.956 0 0112 5c5 0 9 4 9 7 0 1.291-.441 2.496-1.2 3.5M3 3l18 18M9.88 9.88a3 3 0 104.24 4.24" />
+                      </svg>
+                    ) : (
+                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.477 0 8.268 2.943 9.542 7-1.274 4.057-5.065 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                      </svg>
+                    )}
+                  </button>
+                </div>
+              </div>
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-2">
+                  Confirm New Password
+                </label>
+                <div className="relative">
+                  <input
+                    type={showConfirmPassword ? "text" : "password"}
+                    value={settingsForm.confirmPassword}
+                    onChange={(e) => setSettingsForm({ ...settingsForm, confirmPassword: e.target.value })}
+                    placeholder="Re-enter new password"
+                    disabled={currentPasswordStatus !== "valid"}
+                    className={`w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent outline-none transition-all text-gray-900 placeholder:text-gray-400 pr-12 ${
+                      currentPasswordStatus !== "valid" ? "bg-gray-50 cursor-not-allowed" : ""
+                    }`}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowConfirmPassword((prev) => !prev)}
+                    disabled={currentPasswordStatus !== "valid"}
+                    className={`absolute inset-y-0 right-3 flex items-center text-gray-500 hover:text-gray-700 ${
+                      currentPasswordStatus !== "valid" ? "opacity-60 cursor-not-allowed" : ""
+                    }`}
+                    aria-label={showConfirmPassword ? "Hide confirm password" : "Show confirm password"}
+                  >
+                    {showConfirmPassword ? (
+                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.875 18.825A10.05 10.05 0 0112 19c-5 0-9-4-9-7 0-1.06.37-2.063 1.05-2.975M6.228 6.228A9.956 9.956 0 0112 5c5 0 9 4 9 7 0 1.291-.441 2.496-1.2 3.5M3 3l18 18M9.88 9.88a3 3 0 104.24 4.24" />
+                      </svg>
+                    ) : (
+                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.477 0 8.268 2.943 9.542 7-1.274 4.057-5.065 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                      </svg>
+                    )}
+                  </button>
+                </div>
+              </div>
+            </div>
+            <div className="flex justify-end">
+              <button
+                type="submit"
+                disabled={settingsLoading}
+                className={`px-6 py-3 rounded-lg font-semibold text-white bg-green-600 hover:bg-green-700 transition-colors ${
+                  settingsLoading ? "opacity-60 cursor-not-allowed" : ""
+                }`}
+              >
+                {settingsLoading ? "Saving..." : "Save Changes"}
+              </button>
+            </div>
+          </form>
         </div>
       </main>
 

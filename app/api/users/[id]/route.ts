@@ -47,7 +47,7 @@ export async function PUT(
   try {
     const { id } = await params;
     const body = await request.json();
-    const { avatar, name, email, phone, role, status, password } = body;
+    const { avatar, name, email, phone, role, status, password, currentPassword } = body;
 
     // Check if user exists
     const existingUser = await prisma.user.findUnique({
@@ -85,11 +85,28 @@ export async function PUT(
     }
 
     // Validate password if provided
-    if (password && password.length < 8) {
-      return NextResponse.json(
-        { error: "Password must be at least 8 characters long" },
-        { status: 400 }
-      );
+    if (password) {
+      if (!currentPassword) {
+        return NextResponse.json(
+          { error: "Current password is required to set a new password" },
+          { status: 400 }
+        );
+      }
+
+      const passwordMatches = await bcrypt.compare(currentPassword, existingUser.password);
+      if (!passwordMatches) {
+        return NextResponse.json(
+          { error: "Current password is incorrect" },
+          { status: 401 }
+        );
+      }
+
+      if (password.length < 8) {
+        return NextResponse.json(
+          { error: "Password must be at least 8 characters long" },
+          { status: 400 }
+        );
+      }
     }
 
     // Prepare update data
