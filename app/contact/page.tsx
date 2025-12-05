@@ -39,8 +39,8 @@ export default function ContactPage() {
         </svg>
       ),
       title: "Email Us",
-      content: "support@villagemarket.com",
-      link: "mailto:support@villagemarket.com",
+      content: "villagemarket@gmail.com",
+      link: "mailto:villagemarket@gmail.com",
     },
     {
       icon: (
@@ -49,8 +49,8 @@ export default function ContactPage() {
         </svg>
       ),
       title: "Call Us",
-      content: "+234 (0) 800 123 4567",
-      link: "tel:+2348001234567",
+      content: "+234 806 735 9106",
+      link: "tel:+2348067359106",
     },
     {
       icon: (
@@ -60,7 +60,7 @@ export default function ContactPage() {
         </svg>
       ),
       title: "Visit Us",
-      content: "Lagos, Nigeria",
+      content: "Youth Friendly & Resource Center, UNN Campus, Enugu, Nigeria",
       link: "#",
     },
     {
