@@ -212,6 +212,8 @@ export default function BrowsePage() {
                 ? `${pool.town}, ${pool.location}` 
                 : `${pool.localGovernment}, ${pool.location}`;
               const isCompleted = isPoolCompleted(pool);
+              const isSingleContributor = pool.contributors === 1;
+              const primaryCtaLabel = isCompleted ? "Completed" : isSingleContributor ? "Buy" : "Join Pool";
 
               return (
                 <div
@@ -310,7 +312,7 @@ export default function BrowsePage() {
                         href={`/pools/${pool.slug}`}
                         className="flex-1 bg-green-600 text-white px-4 py-2 rounded-lg font-semibold hover:bg-green-700 transition-colors text-center flex items-center justify-center"
                       >
-                        Join Pool
+                        {primaryCtaLabel}
                       </Link>
                     )}
                   </div>

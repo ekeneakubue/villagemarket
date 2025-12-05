@@ -8,7 +8,7 @@ import SiteFooter from "@/components/SiteFooter";
 const heroSlides = [
   {
     title: "Collective buying starts here",
-    subtitle: "Neighborhood markets • Farming clusters • Faith groups",
+    subtitle: "Neighborhood markets • Farming clusters • Faith groups • Youth groups",
     description: "Source food, livestock, and essentials together with verified contribution pools. Village Market handles the logistics so you stay focused on your community.",
     ctaLabel: "Browse community pools",
     ctaHref: "/browse",
