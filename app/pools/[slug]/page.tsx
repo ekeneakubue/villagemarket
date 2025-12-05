@@ -202,6 +202,7 @@ function PoolDetailPageContent() {
   const locationDisplay = pool.town 
     ? `${pool.town}, ${pool.location}` 
     : `${pool.localGovernment}, ${pool.location}`;
+  const isPoolFull = progress >= 100 || pool.status === "COMPLETED" || pool.currentContributors >= pool.contributors;
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-green-50 via-white to-blue-50">
@@ -288,13 +289,19 @@ function PoolDetailPageContent() {
                 {user ? (
                   <button 
                     onClick={() => {
+                      if (isPoolFull) return;
                       setSelectedSlots(1);
                       setPaymentError(null);
                       setShowModal(true);
                     }}
-                    className="w-full rounded-2xl bg-green-600 px-6 py-4 text-center text-lg font-semibold text-white shadow-lg shadow-green-600/30 hover:bg-green-700 transition"
+                    disabled={isPoolFull}
+                    className={`w-full rounded-2xl px-6 py-4 text-center text-lg font-semibold shadow-lg transition ${
+                      isPoolFull
+                        ? "bg-gray-300 text-gray-600 cursor-not-allowed shadow-none"
+                        : "bg-green-600 text-white shadow-green-600/30 hover:bg-green-700"
+                    }`}
                   >
-                    Contribute {formatCurrency(contributionPerPerson)}
+                    {isPoolFull ? "Completed" : `Contribute ${formatCurrency(contributionPerPerson)}`}
                   </button>
                 ) : (
                   <div className="space-y-3">

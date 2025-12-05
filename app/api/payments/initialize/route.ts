@@ -5,6 +5,15 @@ const PAYSTACK_SECRET_KEY = process.env.PAYSTACK_SECRET_KEY;
 
 export async function POST(request: NextRequest) {
   try {
+    // Ensure Paystack secret key is configured
+    if (!PAYSTACK_SECRET_KEY) {
+      console.error("PAYSTACK_SECRET_KEY is not set in the environment");
+      return NextResponse.json(
+        { error: "Payment configuration error. Please contact support." },
+        { status: 500 }
+      );
+    }
+
     const body = await request.json();
     const { poolId, userId, email, name, phone, amount, slots = 1 } = body;
 
@@ -118,6 +127,12 @@ export async function POST(request: NextRequest) {
       },
     });
 
+    // Determine app base URL for redirects (fallbacks for safety)
+    const appOrigin =
+      request.nextUrl.origin ||
+      process.env.NEXT_PUBLIC_APP_URL ||
+      "http://localhost:3000";
+
     // Initialize Paystack transaction
     const paystackResponse = await fetch(
       "https://api.paystack.co/transaction/initialize",
@@ -131,7 +146,8 @@ export async function POST(request: NextRequest) {
           email,
           amount: Math.round(amount * 100), // Paystack expects amount in kobo
           reference,
-          callback_url: `${process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000"}/api/payments/verify?reference=${reference}`,
+          // Where Paystack redirects the user after payment
+          callback_url: `${appOrigin}/api/payments/verify?reference=${reference}`,
           metadata: {
             poolId,
             contributionId: contribution.id,
@@ -143,16 +159,27 @@ export async function POST(request: NextRequest) {
       }
     );
 
-    const paystackData = await paystackResponse.json();
+    let paystackData: any = null;
+    try {
+      paystackData = await paystackResponse.json();
+    } catch (err) {
+      console.error("Paystack init response parse error:", err);
+    }
 
-    if (!paystackData.status) {
+    if (!paystackResponse.ok || !paystackData?.status) {
       // Delete the pending contribution if Paystack initialization fails
       await prisma.contribution.delete({
         where: { id: contribution.id },
       });
 
+      console.error("Paystack init failed", {
+        httpStatus: paystackResponse.status,
+        message: paystackData?.message,
+        errors: paystackData?.errors,
+      });
+
       return NextResponse.json(
-        { error: paystackData.message || "Failed to initialize payment" },
+        { error: paystackData?.message || "Failed to initialize payment" },
         { status: 400 }
       );
     }

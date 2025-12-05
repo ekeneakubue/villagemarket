@@ -60,6 +60,12 @@ export default function BrowsePage() {
   const [pools, setPools] = useState<Pool[]>([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState<"all" | "FOOD_STUFFS" | "LIVESTOCK">("all");
+  const [statusFilter, setStatusFilter] = useState<"ACTIVE" | "COMPLETED">("ACTIVE");
+
+  const isPoolCompleted = (pool: Pool) => {
+    const progress = pool.goal > 0 ? (pool.currentAmount / pool.goal) * 100 : 0;
+    return progress >= 100 || pool.status === "COMPLETED" || pool.currentContributors >= pool.contributors;
+  };
 
   useEffect(() => {
     async function fetchPools() {
@@ -67,9 +73,7 @@ export default function BrowsePage() {
         const response = await fetch("/api/pools");
         if (response.ok) {
           const data = await response.json();
-          // Only show active pools
-          const activePools = data.filter((pool: Pool) => pool.status === "ACTIVE");
-          setPools(activePools);
+          setPools(data);
         }
       } catch (error) {
         console.error("Error fetching pools:", error);
@@ -80,9 +84,29 @@ export default function BrowsePage() {
     fetchPools();
   }, []);
 
-  const filteredPools = filter === "all" 
+  const filteredPoolsByCategory = filter === "all" 
     ? pools 
     : pools.filter(pool => pool.category === filter);
+
+  const baseList = statusFilter === "COMPLETED" ? pools : filteredPoolsByCategory;
+
+  const filteredPools = baseList
+    .filter((pool) => {
+      const completed = isPoolCompleted(pool);
+
+      // If status filter is Completed, show all completed pools regardless of category.
+      if (statusFilter === "COMPLETED") return completed;
+      return true;
+    })
+    .sort((a, b) => {
+    // Newest pools first; fallback to progress if createdAt is missing
+    const dateA = a.createdAt ? new Date(a.createdAt).getTime() : 0;
+    const dateB = b.createdAt ? new Date(b.createdAt).getTime() : 0;
+    if (dateA !== dateB) return dateB - dateA;
+    const progressA = a.goal > 0 ? a.currentAmount / a.goal : 0;
+    const progressB = b.goal > 0 ? b.currentAmount / b.goal : 0;
+    return progressB - progressA;
+    });
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-green-50 via-white to-blue-50">
@@ -100,37 +124,60 @@ export default function BrowsePage() {
         </div>
 
         {/* Filters */}
-        <div className="flex flex-wrap justify-center gap-2 sm:gap-3 md:gap-4 mb-6 sm:mb-8 px-2">
-          <button 
-            onClick={() => setFilter("all")}
-            className={`px-4 sm:px-6 py-2 text-sm sm:text-base rounded-full font-semibold transition-colors ${
-              filter === "all" 
-                ? "bg-green-600 text-white hover:bg-green-700" 
-                : "bg-white text-gray-700 border border-gray-300 hover:bg-gray-50"
-            }`}
-          >
-            All Pools
-          </button>
-          <button 
-            onClick={() => setFilter("FOOD_STUFFS")}
-            className={`px-4 sm:px-6 py-2 text-sm sm:text-base rounded-full font-semibold transition-colors ${
-              filter === "FOOD_STUFFS" 
-                ? "bg-green-600 text-white hover:bg-green-700" 
-                : "bg-white text-gray-700 border border-gray-300 hover:bg-gray-50"
-            }`}
-          >
-            Food Stuffs
-          </button>
-          <button 
-            onClick={() => setFilter("LIVESTOCK")}
-            className={`px-4 sm:px-6 py-2 text-sm sm:text-base rounded-full font-semibold transition-colors ${
-              filter === "LIVESTOCK" 
-                ? "bg-green-600 text-white hover:bg-green-700" 
-                : "bg-white text-gray-700 border border-gray-300 hover:bg-gray-50"
-            }`}
-          >
-            Livestock
-          </button>
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-center gap-3 sm:gap-4 mb-6 sm:mb-8 px-2">
+          <div className="flex flex-wrap justify-center gap-2 sm:gap-3">
+            <button 
+              onClick={() => {
+                setFilter("all");
+                setStatusFilter("ACTIVE");
+              }}
+              className={`px-4 sm:px-6 py-2 text-sm sm:text-base rounded-full font-semibold transition-colors ${
+                filter === "all" && statusFilter !== "COMPLETED"
+                  ? "bg-green-600 text-white hover:bg-green-700" 
+                  : "bg-white text-gray-700 border border-gray-300 hover:bg-gray-50"
+              }`}
+            >
+              All Categories
+            </button>
+            <button 
+              onClick={() => {
+                setFilter("FOOD_STUFFS");
+                setStatusFilter("ACTIVE");
+              }}
+              className={`px-4 sm:px-6 py-2 text-sm sm:text-base rounded-full font-semibold transition-colors ${
+                filter === "FOOD_STUFFS" && statusFilter !== "COMPLETED"
+                  ? "bg-green-600 text-white hover:bg-green-700" 
+                  : "bg-white text-gray-700 border border-gray-300 hover:bg-gray-50"
+              }`}
+            >
+              Food Stuffs
+            </button>
+            <button 
+              onClick={() => {
+                setFilter("LIVESTOCK");
+                setStatusFilter("ACTIVE");
+              }}
+              className={`px-4 sm:px-6 py-2 text-sm sm:text-base rounded-full font-semibold transition-colors ${
+                filter === "LIVESTOCK" && statusFilter !== "COMPLETED"
+                  ? "bg-green-600 text-white hover:bg-green-700" 
+                  : "bg-white text-gray-700 border border-gray-300 hover:bg-gray-50"
+              }`}
+            >
+              Livestock
+            </button>
+          </div>
+          <div className="flex flex-wrap justify-center gap-2 sm:gap-3">
+            <button 
+              onClick={() => setStatusFilter((prev) => (prev === "COMPLETED" ? "ACTIVE" : "COMPLETED"))}
+              className={`px-4 sm:px-6 py-2 text-sm sm:text-base rounded-full font-semibold transition-colors ${
+                statusFilter === "COMPLETED" 
+                  ? "bg-green-600 text-white hover:bg-green-700" 
+                  : "bg-white text-gray-700 border border-gray-300 hover:bg-gray-50"
+              }`}
+            >
+              Completed
+            </button>
+          </div>
         </div>
       </section>
 
@@ -164,7 +211,8 @@ export default function BrowsePage() {
               const locationDisplay = pool.town 
                 ? `${pool.town}, ${pool.location}` 
                 : `${pool.localGovernment}, ${pool.location}`;
-              
+              const isCompleted = isPoolCompleted(pool);
+
               return (
                 <div
                   key={pool.id}
@@ -249,12 +297,22 @@ export default function BrowsePage() {
                       <p className="text-xs text-green-700 font-medium">Contribution</p>
                       <p className="text-lg font-bold text-green-800">{formatCurrency(contributionPerPerson)}</p>
                     </div>
-                    <Link
-                      href={`/pools/${pool.slug}`}
-                      className="flex-1 bg-green-600 text-white px-4 py-2 rounded-lg font-semibold hover:bg-green-700 transition-colors text-center flex items-center justify-center"
-                    >
-                      Join Pool
-                    </Link>
+                    {isCompleted ? (
+                      <button
+                        type="button"
+                        disabled
+                        className="flex-1 bg-gray-200 text-gray-500 px-4 py-2 rounded-lg font-semibold cursor-not-allowed text-center flex items-center justify-center"
+                      >
+                        Completed
+                      </button>
+                    ) : (
+                      <Link
+                        href={`/pools/${pool.slug}`}
+                        className="flex-1 bg-green-600 text-white px-4 py-2 rounded-lg font-semibold hover:bg-green-700 transition-colors text-center flex items-center justify-center"
+                      >
+                        Join Pool
+                      </Link>
+                    )}
                   </div>
 
                   {/* Remaining Amount */}
