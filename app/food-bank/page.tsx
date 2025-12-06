@@ -59,7 +59,7 @@ export default function FoodBankPage() {
     {
       id: "1",
       name: "Fatima Hassan",
-      university: "University of Lagos (UNILAG)",
+      university: "University of Nigeria, Nsukka (UNN)",
       course: "Computer Science",
       year: "300 Level",
       itemsReceived: "Rice, Beans, Oil",
@@ -69,7 +69,7 @@ export default function FoodBankPage() {
     {
       id: "2",
       name: "Joseph Martins",
-      university: "Lagos State University (LASU)",
+      university: "University of Nigeria, Enugu Campus (UNEC)",
       course: "Mechanical Engineering",
       year: "400 Level",
       itemsReceived: "Yam, Garri, Palm Oil",
@@ -79,7 +79,7 @@ export default function FoodBankPage() {
     {
       id: "3",
       name: "Blessing Okoro",
-      university: "University of Lagos (UNILAG)",
+      university: "University of Nigeria, Nsukka (UNN)",
       course: "Law",
       year: "200 Level",
       itemsReceived: "Beans, Tomatoes, Noodles",
@@ -89,9 +89,9 @@ export default function FoodBankPage() {
     {
       id: "4",
       name: "Ibrahim Musa",
-      university: "Yaba College of Technology",
+      university: "University of Nigeria, Ituku-Ozalla Campus",
       course: "Business Administration",
-      year: "ND2",
+      year: "300 Level",
       itemsReceived: "Rice, Chicken, Vegetables",
       date: "2024-12-02",
       avatar: "👨‍🎓",
@@ -99,7 +99,7 @@ export default function FoodBankPage() {
     {
       id: "5",
       name: "Chioma Eze",
-      university: "Pan-Atlantic University",
+      university: "University of Nigeria, Enugu Campus (UNEC)",
       course: "Mass Communication",
       year: "300 Level",
       itemsReceived: "Garri, Groundnut, Bread",
@@ -109,7 +109,7 @@ export default function FoodBankPage() {
     {
       id: "6",
       name: "Yusuf Abdullahi",
-      university: "Lagos State University (LASU)",
+      university: "University of Nigeria, Nsukka (UNN)",
       course: "Medicine",
       year: "500 Level",
       itemsReceived: "Rice, Beans, Oil, Milk",
@@ -123,7 +123,7 @@ export default function FoodBankPage() {
       id: "1",
       title: "Christmas Food Distribution for Students",
       description: "Special food package distribution for university students during the festive season",
-      location: "UNILAG Campus, Akoka",
+      location: "UNN Campus, Nsukka",
       date: "2024-12-20",
       time: "10:00 AM - 4:00 PM",
       beneficiaries: 150,
@@ -134,7 +134,7 @@ export default function FoodBankPage() {
       id: "2",
       title: "Weekly Student Food Bank Drive",
       description: "Regular weekly distribution of essential food items to registered university students",
-      location: "LASU Campus, Ojo",
+      location: "UNEC Campus, Enugu",
       date: "2024-12-14",
       time: "9:00 AM - 2:00 PM",
       beneficiaries: 80,
@@ -145,7 +145,7 @@ export default function FoodBankPage() {
       id: "3",
       title: "Exam Period Food Support",
       description: "Distributed food supplies and study snacks to students during final exams",
-      location: "Yaba College of Technology",
+      location: "UNN Ituku-Ozalla Campus",
       date: "2024-12-01",
       time: "8:00 AM - 5:00 PM",
       beneficiaries: 200,
@@ -156,7 +156,7 @@ export default function FoodBankPage() {
       id: "4",
       title: "New Semester Welcome Package",
       description: "Food packages for students returning to campus for a new academic session",
-      location: "Pan-Atlantic University, Ibeju-Lekki",
+      location: "UNEC Campus, Enugu",
       date: "2024-11-25",
       time: "10:00 AM - 3:00 PM",
       beneficiaries: 120,
@@ -204,8 +204,8 @@ export default function FoodBankPage() {
             </span>
           </h1>
           <p className="text-xl md:text-2xl text-gray-600 mb-8 max-w-3xl mx-auto">
-            Supporting university students with essential food supplies. Helping students
-            focus on their education without worrying about their next meal.
+            Supporting University of Nigeria students (UNN, UNEC, Ituku-Ozalla) with essential food supplies. 
+            Helping students focus on their education without worrying about their next meal.
           </p>
 
           {/* Stats Grid */}

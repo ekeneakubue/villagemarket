@@ -101,7 +101,7 @@ export default function ContactPage() {
   const foodBankFaqs = [
     {
       question: "Who can benefit from the Student Food Bank?",
-      answer: "The Student Food Bank is exclusively for currently enrolled university students in Lagos. Students must provide valid student ID and proof of enrollment to qualify for food assistance.",
+      answer: "The Student Food Bank is exclusively for currently enrolled students at University of Nigeria campuses (UNN Nsukka, UNEC Enugu, and Ituku-Ozalla). Students must provide valid student ID and proof of enrollment to qualify for food assistance.",
     },
     {
       question: "How can I donate to the Student Food Bank?",
@@ -117,7 +117,7 @@ export default function ContactPage() {
     },
     {
       question: "How often are food distribution events held?",
-      answer: "We hold weekly distribution events at various university campuses across Lagos. Special distributions are also organized during exam periods and at the start of new semesters. Check our Food Bank page for upcoming event schedules.",
+      answer: "We hold weekly distribution events at University of Nigeria campuses (UNN, UNEC, and Ituku-Ozalla). Special distributions are also organized during exam periods and at the start of new semesters. Check our Food Bank page for upcoming event schedules.",
     },
     {
       question: "Can I volunteer at food distribution events?",
@@ -125,11 +125,11 @@ export default function ContactPage() {
     },
     {
       question: "How is my monetary donation used?",
-      answer: "100% of monetary donations go directly to purchasing food items for students. We provide regular impact reports showing exactly how your donation has helped feed university students in need.",
+      answer: "100% of monetary donations go directly to purchasing food items for students. We provide regular impact reports showing exactly how your donation has helped feed University of Nigeria students in need.",
     },
     {
       question: "Where are food distribution events held?",
-      answer: "Events are held at various university campuses including UNILAG, LASU, Yabatech, and Pan-Atlantic University. Specific locations are announced on our website and through email notifications to registered students.",
+      answer: "Events are held at University of Nigeria campuses including UNN Nsukka, UNEC Enugu, and Ituku-Ozalla Campus. Specific locations are announced on our website and through email notifications to registered students.",
     },
     {
       question: "Is there a limit to how much food a student can receive?",
