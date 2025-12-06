@@ -60,7 +60,7 @@ export default function ContactPage() {
         </svg>
       ),
       title: "Visit Us",
-      content: "Youth Friendly & Resource Center, UNN Campus, Enugu, Nigeria",
+      content: "Youth Friendly Resource Center, UNN Campus, Enugu, Nigeria",
       link: "#",
     },
     {

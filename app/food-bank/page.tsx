@@ -346,52 +346,49 @@ export default function FoodBankPage() {
                   : "bg-gray-50 border-gray-200"
               }`}
             >
-              <div className="flex items-start gap-6">
-                <div className="text-6xl">{event.image}</div>
-                <div className="flex-1">
-                  <div className="flex items-center gap-3 mb-3">
-                    <h3 className="text-2xl font-bold text-gray-900">
-                      {event.title}
-                    </h3>
-                    <span
-                      className={`px-3 py-1 rounded-full text-xs font-semibold ${
-                        event.status === "upcoming"
-                          ? "bg-green-600 text-white"
-                          : "bg-gray-400 text-white"
-                      }`}
-                    >
-                      {event.status === "upcoming" ? "Upcoming" : "Completed"}
+              <div className="flex flex-col gap-4">
+                <div className="flex items-center gap-3">
+                  <h3 className="text-2xl font-bold text-gray-900">
+                    {event.title}
+                  </h3>
+                  <span
+                    className={`px-3 py-1 rounded-full text-xs font-semibold ${
+                      event.status === "upcoming"
+                        ? "bg-green-600 text-white"
+                        : "bg-gray-400 text-white"
+                    }`}
+                  >
+                    {event.status === "upcoming" ? "Upcoming" : "Completed"}
+                  </span>
+                </div>
+                <p className="text-gray-600 mb-4">{event.description}</p>
+                <div className="space-y-2 text-sm">
+                  <div className="flex items-center gap-2">
+                    <span className="text-lg">📍</span>
+                    <span className="text-gray-700 font-medium">{event.location}</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className="text-lg">📅</span>
+                    <span className="text-gray-700 font-medium">
+                      {formatDate(event.date)}
                     </span>
                   </div>
-                  <p className="text-gray-600 mb-4">{event.description}</p>
-                  <div className="space-y-2 text-sm">
-                    <div className="flex items-center gap-2">
-                      <span className="text-lg">📍</span>
-                      <span className="text-gray-700 font-medium">{event.location}</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <span className="text-lg">📅</span>
-                      <span className="text-gray-700 font-medium">
-                        {formatDate(event.date)}
-                      </span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <span className="text-lg">⏰</span>
-                      <span className="text-gray-700 font-medium">{event.time}</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <span className="text-lg">👥</span>
-                      <span className="text-gray-700 font-medium">
-                        {event.beneficiaries} beneficiaries
-                      </span>
-                    </div>
+                  <div className="flex items-center gap-2">
+                    <span className="text-lg">⏰</span>
+                    <span className="text-gray-700 font-medium">{event.time}</span>
                   </div>
-                  {event.status === "upcoming" && (
-                    <button className="mt-6 bg-green-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-green-700 transition-colors w-full">
-                      Register to Attend
-                    </button>
-                  )}
+                  <div className="flex items-center gap-2">
+                    <span className="text-lg">👥</span>
+                    <span className="text-gray-700 font-medium">
+                      {event.beneficiaries} beneficiaries
+                    </span>
+                  </div>
                 </div>
+                {event.status === "upcoming" && (
+                  <button className="mt-6 bg-green-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-green-700 transition-colors w-full">
+                    Register to Attend
+                  </button>
+                )}
               </div>
             </div>
           ))}
