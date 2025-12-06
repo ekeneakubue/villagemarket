@@ -98,6 +98,49 @@ export default function ContactPage() {
     },
   ];
 
+  const foodBankFaqs = [
+    {
+      question: "Who can benefit from the Student Food Bank?",
+      answer: "The Student Food Bank is exclusively for currently enrolled university students in Lagos. Students must provide valid student ID and proof of enrollment to qualify for food assistance.",
+    },
+    {
+      question: "How can I donate to the Student Food Bank?",
+      answer: "You can donate through our online donation form by visiting the Food Bank page and clicking 'Donate Now'. You can choose to make monetary donations or donate food items directly. We accept one-time or recurring donations.",
+    },
+    {
+      question: "What types of food items can I donate?",
+      answer: "We accept non-perishable food items such as rice, beans, garri, yam, cooking oil, canned goods, noodles, pasta, and other staple foods. All food items must be sealed and within their expiration dates.",
+    },
+    {
+      question: "How do students register to receive food assistance?",
+      answer: "Students can register by attending any of our distribution events with a valid student ID, proof of enrollment, and a brief application explaining their need. Registration is free and confidential.",
+    },
+    {
+      question: "How often are food distribution events held?",
+      answer: "We hold weekly distribution events at various university campuses across Lagos. Special distributions are also organized during exam periods and at the start of new semesters. Check our Food Bank page for upcoming event schedules.",
+    },
+    {
+      question: "Can I volunteer at food distribution events?",
+      answer: "Yes! We welcome volunteers to help with sorting, packing, and distributing food items. Contact us through this form or visit the Food Bank page to learn about volunteer opportunities.",
+    },
+    {
+      question: "How is my monetary donation used?",
+      answer: "100% of monetary donations go directly to purchasing food items for students. We provide regular impact reports showing exactly how your donation has helped feed university students in need.",
+    },
+    {
+      question: "Where are food distribution events held?",
+      answer: "Events are held at various university campuses including UNILAG, LASU, Yabatech, and Pan-Atlantic University. Specific locations are announced on our website and through email notifications to registered students.",
+    },
+    {
+      question: "Is there a limit to how much food a student can receive?",
+      answer: "Food packages are designed to provide essential nutrition for 1-2 weeks. The amount varies based on available inventory and the number of beneficiaries. We aim to help as many students as possible while ensuring everyone receives adequate support.",
+    },
+    {
+      question: "Can organizations or companies partner with the Food Bank?",
+      answer: "Absolutely! We welcome partnerships with organizations, companies, alumni associations, and religious groups. Partnership opportunities include sponsoring distribution events, providing bulk food donations, or setting up recurring contribution programs. Contact us to discuss partnership options.",
+    },
+  ];
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-green-50 via-white to-blue-50">
       <SiteHeader />
@@ -305,31 +348,47 @@ export default function ContactPage() {
         </div>
       </section>
 
-      {/* CTA Section */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
-        <div className="bg-gradient-to-r from-green-600 to-blue-600 rounded-3xl p-12 text-center text-white">
-          <h2 className="text-4xl md:text-5xl font-bold mb-4">
-            Still Have Questions?
+      {/* Food Bank FAQ Section */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 bg-white rounded-3xl my-10">
+        <div className="text-center mb-12">
+          <div className="text-6xl mb-4">🎓🍚</div>
+          <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
+            Student Food Bank FAQs
           </h2>
-          <p className="text-xl mb-8 text-green-50 max-w-2xl mx-auto">
-            Can't find what you're looking for? Our support team is ready to help you 24/7.
+          <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+            Everything you need to know about our food bank program for university students
           </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <a
-              href="mailto:support@villagemarket.com"
-              className="bg-white text-green-600 px-8 py-4 rounded-full text-lg font-semibold hover:bg-gray-100 transition-all transform hover:scale-105 shadow-lg"
-            >
-              Email Support
-            </a>
-            <Link
-              href="/browse"
-              className="bg-transparent border-2 border-white text-white px-8 py-4 rounded-full text-lg font-semibold hover:bg-white/10 transition-all"
-            >
-              Browse Pools
-            </Link>
-          </div>
         </div>
-      </section>
+
+        <div className="space-y-4 max-w-5xl mx-auto">
+          {foodBankFaqs.map((faq, index) => (
+            <div
+              key={index}
+              className="bg-linear-to-r from-green-50 to-blue-50 rounded-xl border-2 border-green-100 p-6 hover:shadow-lg transition-all"
+            >
+              <h3 className="text-lg font-bold text-gray-900 mb-3 flex items-start gap-3">
+                <span className="text-green-600 shrink-0">Q{index + 1}.</span>
+                <span>{faq.question}</span>
+              </h3>
+              <p className="text-gray-700 leading-relaxed ml-8">
+                {faq.answer}
+              </p>
+            </div>
+          ))}
+        </div>
+
+        <div className="text-center mt-12">
+          <p className="text-gray-600 mb-6">
+            Have more questions about our Student Food Bank program?
+          </p>
+          <Link
+            href="/food-bank"
+            className="inline-block bg-green-600 text-white px-8 py-3 rounded-full font-semibold hover:bg-green-700 transition-all transform hover:scale-105 shadow-lg"
+          >
+            Visit Food Bank Page
+          </Link>
+        </div>
+      </section>     
 
       <SiteFooter />
     </div>

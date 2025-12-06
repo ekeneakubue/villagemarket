@@ -5,9 +5,12 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 
 const navLinks = [
+  { label: "About Us", href: "/about/team" },
   { label: "How It Works", href: "/#how-it-works" },
   { label: "All Pools", href: "/browse" },
   { label: "Features", href: "/#features" },
+  { label: "Food Bank", href: "/food-bank" },
+  { label: "Contact Us", href: "/contact" },
 ];
 
 interface User {

@@ -3,14 +3,30 @@ import SiteHeader from "@/components/SiteHeader";
 import SiteFooter from "@/components/SiteFooter";
 import prisma from "@/lib/prisma";
 
+type TeamMemberCard = {
+  id?: string;
+  name: string;
+  role: string;
+  bio: string;
+  avatar?: string | null;
+};
+
+// Force dynamic rendering so we always read fresh data from the database
+export const revalidate = 0;
+
 export default async function TeamPage() {
   // Fetch team members from the database
-  const dbTeamMembers = await prisma.teamMember.findMany({
-    orderBy: [
-      { displayOrder: "asc" },
-      { createdAt: "asc" },
-    ],
-  });
+  let dbTeamMembers: TeamMemberCard[] = [];
+  try {
+    dbTeamMembers = await prisma.teamMember.findMany({
+      orderBy: [
+        { displayOrder: "asc" },
+        { createdAt: "asc" },
+      ],
+    });
+  } catch (error) {
+    console.error("Failed to load team members from the database", error);
+  }
 
   // Fallback static team if database is empty
   const fallbackTeam = [
@@ -55,7 +71,7 @@ export default async function TeamPage() {
   const teamMembers = dbTeamMembers.length > 0 ? dbTeamMembers : fallbackTeam;
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-green-50 via-white to-blue-50">
+    <div className="min-h-screen bg-linear-to-b from-green-50 via-white to-blue-50">
       <SiteHeader />
 
       {/* Hero Section */}
@@ -64,7 +80,7 @@ export default async function TeamPage() {
           <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold text-gray-900 mb-6 leading-tight">
             Meet Our
             <br />
-            <span className="bg-gradient-to-r from-green-600 to-blue-600 bg-clip-text text-transparent">
+            <span className="bg-linear-to-r from-green-600 to-blue-600 bg-clip-text text-transparent">
               Amazing Team
             </span>
           </h1>
@@ -77,14 +93,14 @@ export default async function TeamPage() {
 
       {/* Team Members Grid */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-8">
           {teamMembers.map((member: any, index: number) => (
             <div
               key={index}
               className="bg-white rounded-2xl p-8 shadow-lg border border-gray-100 hover:shadow-xl transition-shadow"
             >
               <div className="text-center">
-                <div className="w-24 h-24 bg-gradient-to-br from-green-100 to-blue-100 rounded-full flex items-center justify-center text-5xl mx-auto mb-6 overflow-hidden">
+                <div className="w-24 h-24 bg-linear-to-br from-green-100 to-blue-100 rounded-full flex items-center justify-center text-5xl mx-auto mb-6 overflow-hidden">
                   {member.avatar && (member.avatar.startsWith("http") || member.avatar.startsWith("data:")) ? (
                     <img
                       src={member.avatar}
