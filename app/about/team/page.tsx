@@ -78,53 +78,14 @@ export default async function TeamPage() {
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-20 pb-16">
         <div className="text-center">
           <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold text-gray-900 mb-6 leading-tight">
-            Meet Our
-            <br />
-            <span className="bg-linear-to-r from-green-600 to-blue-600 bg-clip-text text-transparent">
-              Amazing Team
-            </span>
+            Village Market           
           </h1>
           <p className="text-xl md:text-2xl text-gray-600 mb-8 max-w-3xl mx-auto">
             We're a passionate group of individuals dedicated to building stronger communities 
             through collaborative resource sharing.
           </p>
         </div>
-      </section>
-
-      {/* Team Members Grid */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-8">
-          {teamMembers.map((member: any, index: number) => (
-            <div
-              key={index}
-              className="bg-white rounded-2xl p-8 shadow-lg border border-gray-100 hover:shadow-xl transition-shadow"
-            >
-              <div className="text-center">
-                <div className="w-24 h-24 bg-linear-to-br from-green-100 to-blue-100 rounded-full flex items-center justify-center text-5xl mx-auto mb-6 overflow-hidden">
-                  {member.avatar && (member.avatar.startsWith("http") || member.avatar.startsWith("data:")) ? (
-                    <img
-                      src={member.avatar}
-                      alt={member.name}
-                      className="w-full h-full object-cover"
-                    />
-                  ) : (
-                    <span>{member.avatar || "👤"}</span>
-                  )}
-                </div>
-                <h3 className="text-2xl font-semibold text-gray-900 mb-2">
-                  {member.name}
-                </h3>
-                <p className="text-green-600 font-semibold mb-4">
-                  {member.role}
-                </p>
-                <p className="text-gray-600 leading-relaxed">
-                  {member.bio}
-                </p>
-              </div>
-            </div>
-          ))}
-        </div>
-      </section>
+      </section>      
 
       {/* Mission Section */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 bg-white rounded-3xl mb-20">
