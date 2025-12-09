@@ -68,136 +68,7 @@ interface Pool {
   createdAt: string;
 }
 
-// Mock data - in a real app, this would come from an API
-const stats = {
-  totalPools: 48,
-  activePools: 32,
-  completedPools: 16,
-  totalUsers: 1247,
-  totalTransactions: 3421,
-  totalAmount: 125000000,
-  pendingApprovals: 5,
-};
-
-const recentPools = [
-  {
-    id: 1,
-    title: "Bulk Rice Purchase",
-    category: "Food Stuffs",
-    creator: "John Doe",
-    goal: 500000,
-    current: 325000,
-    contributors: 15,
-    status: "active",
-    createdAt: "2024-01-15",
-    image: "https://images.unsplash.com/photo-1586201375761-83865001e31c?auto=format&fit=crop&w=200&q=80",
-  },
-  {
-    id: 2,
-    title: "Community Cow Purchase",
-    category: "Livestock",
-    creator: "Jane Smith",
-    goal: 800000,
-    current: 800000,
-    contributors: 10,
-    status: "completed",
-    createdAt: "2024-01-10",
-    image: "https://images.unsplash.com/photo-1527153857715-3908f2bae5e8?auto=format&fit=crop&w=200&q=80",
-  },
-  {
-    id: 3,
-    title: "Cooking Oil Bulk Buy",
-    category: "Food Stuffs",
-    creator: "Mike Johnson",
-    goal: 300000,
-    current: 180000,
-    contributors: 12,
-    status: "active",
-    createdAt: "2024-01-18",
-    image: "https://images.unsplash.com/photo-1474979266404-7eaacbcd87c5?auto=format&fit=crop&w=200&q=80",
-  },
-  {
-    id: 4,
-    title: "Goat Farming Pool",
-    category: "Livestock",
-    creator: "Sarah Williams",
-    goal: 600000,
-    current: 450000,
-    contributors: 8,
-    status: "active",
-    createdAt: "2024-01-20",
-    image: "https://images.unsplash.com/photo-1524024973431-2ad916746881?auto=format&fit=crop&w=200&q=80",
-  },
-];
-
-const recentUsers = [
-  {
-    id: 1,
-    name: "John Doe",
-    email: "john@example.com",
-    role: "Admin",
-    poolsCreated: 3,
-    poolsJoined: 8,
-    totalContributed: 150000,
-    joinedAt: "2024-01-01",
-    status: "active",
-  },
-  {
-    id: 2,
-    name: "Jane Smith",
-    email: "jane@example.com",
-    role: "Contributor",
-    poolsCreated: 5,
-    poolsJoined: 12,
-    totalContributed: 320000,
-    joinedAt: "2023-12-15",
-    status: "active",
-  },
-  {
-    id: 3,
-    name: "Mike Johnson",
-    email: "mike@example.com",
-    role: "Contributor",
-    poolsCreated: 2,
-    poolsJoined: 6,
-    totalContributed: 95000,
-    joinedAt: "2024-01-10",
-    status: "active",
-  },
-  {
-    id: 4,
-    name: "Sarah Williams",
-    email: "sarah@example.com",
-    role: "Contributor",
-    poolsCreated: 4,
-    poolsJoined: 10,
-    totalContributed: 280000,
-    joinedAt: "2023-11-20",
-    status: "suspended",
-  },
-  {
-    id: 5,
-    name: "David Brown",
-    email: "david@example.com",
-    role: "Contributor",
-    poolsCreated: 0,
-    poolsJoined: 15,
-    totalContributed: 450000,
-    joinedAt: "2023-10-05",
-    status: "active",
-  },
-  {
-    id: 6,
-    name: "Admin User",
-    email: "admin@villagemarket.ng",
-    role: "Admin",
-    poolsCreated: 0,
-    poolsJoined: 0,
-    totalContributed: 0,
-    joinedAt: "2023-01-01",
-    status: "active",
-  },
-];
+// Note: stats, recentPools, and recentUsers are now fetched from API in the component state
 
 const recentTransactions = [
   {
@@ -349,6 +220,22 @@ function AdminDashboardContent() {
   const [isTeamSaving, setIsTeamSaving] = useState(false);
   const [isUserSaving, setIsUserSaving] = useState(false);
   const [isCreatorSaving, setIsCreatorSaving] = useState(false);
+  
+  // Admin stats state
+  const [stats, setStats] = useState({
+    totalPools: 0,
+    activePools: 0,
+    completedPools: 0,
+    pendingPools: 0,
+    cancelledPools: 0,
+    totalUsers: 0,
+    totalTransactions: 0,
+    totalAmount: 0,
+    pendingApprovals: 0,
+  });
+  const [recentPools, setRecentPools] = useState<any[]>([]);
+  const [recentUsers, setRecentUsers] = useState<any[]>([]);
+  const [statsLoading, setStatsLoading] = useState(true);
 
   // Update URL when tab changes
   const handleTabChange = (tab: TabType) => {
@@ -427,6 +314,26 @@ function AdminDashboardContent() {
       }
     }
     fetchTeamMembers();
+  }, []);
+
+  // Fetch admin statistics from API
+  useEffect(() => {
+    async function fetchStats() {
+      try {
+        const response = await fetch("/api/admin/stats");
+        if (response.ok) {
+          const data = await response.json();
+          setStats(data.stats);
+          setRecentPools(data.recentPools);
+          setRecentUsers(data.recentUsers);
+        }
+      } catch (error) {
+        console.error("Error fetching admin stats:", error);
+      } finally {
+        setStatsLoading(false);
+      }
+    }
+    fetchStats();
   }, []);
 
   const [formData, setFormData] = useState({
@@ -1137,6 +1044,15 @@ function AdminDashboardContent() {
                 <p className="text-sm sm:text-base text-gray-600">Monitor and manage your platform activities</p>
               </div>
 
+              {statsLoading ? (
+                <div className="flex items-center justify-center py-20">
+                  <div className="text-center">
+                    <div className="inline-block animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-green-600 mb-4"></div>
+                    <p className="text-gray-600">Loading dashboard data...</p>
+                  </div>
+                </div>
+              ) : (
+                <>
               {/* Stats Grid */}
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                 <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-200">
@@ -1151,10 +1067,22 @@ function AdminDashboardContent() {
                       </svg>
                     </div>
                   </div>
-                  <div className="mt-4 flex items-center text-sm">
+                  <div className="mt-4 flex flex-wrap items-center gap-x-2 gap-y-1 text-sm">
                     <span className="text-green-600 font-semibold">{stats.activePools} active</span>
-                    <span className="text-gray-400 mx-2">•</span>
-                    <span className="text-gray-600">{stats.completedPools} completed</span>
+                    <span className="text-gray-400">•</span>
+                    <span className="text-blue-600 font-semibold">{stats.completedPools} completed</span>
+                    {stats.pendingPools > 0 && (
+                      <>
+                        <span className="text-gray-400">•</span>
+                        <span className="text-yellow-600">{stats.pendingPools} pending</span>
+                      </>
+                    )}
+                    {stats.cancelledPools > 0 && (
+                      <>
+                        <span className="text-gray-400">•</span>
+                        <span className="text-red-600">{stats.cancelledPools} cancelled</span>
+                      </>
+                    )}
                   </div>
                 </div>
 
@@ -1219,6 +1147,11 @@ function AdminDashboardContent() {
                     <h2 className="text-xl font-semibold text-gray-900">Recent Pools</h2>
                   </div>
                   <div className="p-6">
+                    {recentPools.length === 0 ? (
+                      <div className="text-center py-8 text-gray-500">
+                        <p>No recent pools found</p>
+                      </div>
+                    ) : (
                     <div className="space-y-4">
                       {recentPools.slice(0, 5).map((pool) => (
                         <div key={pool.id} className="flex items-center justify-between pb-4 border-b border-gray-100 last:border-0 last:pb-0">
@@ -1235,6 +1168,7 @@ function AdminDashboardContent() {
                         </div>
                       ))}
                     </div>
+                    )}
                     <button
                       onClick={() => handleTabChange("pools")}
                       className="mt-4 w-full text-center text-green-600 hover:text-green-700 font-semibold text-sm"
@@ -1274,6 +1208,8 @@ function AdminDashboardContent() {
                   </div>
                 </div>
               </div>
+              </>
+              )}
             </div>
           )}
 
